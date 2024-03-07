@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "University", "University\University.csproj", "{1EFC2230-8CF4-44DD-9F89-7D91A60A64BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "University.API", "University.API\University.API.csproj", "{1EFC2230-8CF4-44DD-9F89-7D91A60A64BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "University.Test", "University.Test\University.Test.csproj", "{E11C0B77-B7E1-4757-95A5-B230486D37AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +14,9 @@ Global
 		{1EFC2230-8CF4-44DD-9F89-7D91A60A64BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EFC2230-8CF4-44DD-9F89-7D91A60A64BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EFC2230-8CF4-44DD-9F89-7D91A60A64BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E11C0B77-B7E1-4757-95A5-B230486D37AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E11C0B77-B7E1-4757-95A5-B230486D37AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E11C0B77-B7E1-4757-95A5-B230486D37AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E11C0B77-B7E1-4757-95A5-B230486D37AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
