@@ -1,6 +1,9 @@
 namespace University.Domain;
 
-
+/// <summary>
+/// Represents an individual user with account data.
+/// </summary>
+/// <author>waffencode@gmail.com</author>
 public class User
 {
     public Guid Id { get; } = Guid.NewGuid();
