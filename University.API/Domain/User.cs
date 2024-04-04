@@ -31,10 +31,10 @@ public class User
     /// <summary>
     /// Parameterized constructor.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="username"></param>
-    /// <param name="email"></param>
-    /// <param name="passwordHash"></param>
+    /// <param name="id">User's unique identifier.</param>
+    /// <param name="username">User's login name.</param>
+    /// <param name="email">User's email address.</param>
+    /// <param name="passwordHash">User's hashed password.</param>
     public User(Guid id, string? username, string? email, string? passwordHash)
     {
         Id = id;
