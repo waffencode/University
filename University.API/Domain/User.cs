@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace University.Domain;
 
 /// <summary>
@@ -21,6 +23,7 @@ public class User
     /// <summary>
     /// User's email address.
     /// </summary>
+    [EmailAddress(ErrorMessage = "Invalid email address.")]
     public string? Email { get; set; }
 
     /// <summary>
