@@ -38,4 +38,16 @@ public class UserRepository
     /// <param name="id">Guid of user.</param>
     /// <returns>An instance of <see cref="User"/> if exists, otherwise null.</returns>
     public async Task<User?> GetUserById(Guid id) => await Context.Users.FirstOrDefaultAsync(x => x.Id == id);
+
+    public async Task DeleteUser(Guid id)
+    {
+        User user = await GetUserById(id);
+        if (user == null)
+        {
+            return;
+        }
+        
+        Context.Users.Remove(user);
+        await Context.SaveChangesAsync();
+    }
 }

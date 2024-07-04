@@ -35,4 +35,56 @@ public class UserController : ControllerBase
 
         return user == null ? NotFound() : Ok(user);
     }
+
+    /// <summary>
+    /// Method to create a new user.
+    /// </summary>
+    /// <param name="user">An instance of <see cref="User"/>.</param>
+    /// <returns></returns>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<User>> CreateUser(User user)
+    {
+        await _userRepository.CreateUser(user);
+        var createdUserId = user.Id;
+        
+        var createdUser  = await  _userRepository.GetUserById(createdUserId);
+        if (createdUser == null)
+        {
+            return BadRequest();
+        }
+        
+        return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
+    }
+
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<User>> UpdateUserPut(Guid id, User user)
+    {
+        
+    }
+
+    [HttpPatch("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<User>> UpdateUserPatch(Guid id, User user)
+    {
+        
+    }
+    
+    /// <summary>
+    /// Method to delete a user.
+    /// </summary>
+    /// <param name="id">User's guid</param>
+    /// <returns></returns>
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> DeleteUser(Guid id)
+    {
+        await  _userRepository.DeleteUser(id);
+        return Ok();
+    }
 }

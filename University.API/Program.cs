@@ -13,18 +13,16 @@ builder.Services.AddCors(options =>
     });
 });
 
-
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// TODO: Replace with normal database.
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseInMemoryDatabase("users"));
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
