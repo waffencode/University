@@ -8,7 +8,7 @@ namespace University.Repository;
 /// Repository for <see cref="User"/>. Implements CRUD operations.
 /// </summary>
 /// <author>waffencode@gmail.com</author>
-public class UserRepository
+public class UserRepository : IUserRepository
 {
     /// <summary>
     /// An instance of <see cref="UserContext"/>.
@@ -97,5 +97,23 @@ public class UserRepository
         var updatedUser = currentUser.GetPartiallyUpdatedUser(user);
         Context.Users.Update(updatedUser);
         await Context.SaveChangesAsync();
+    }
+    
+    /// <summary>
+    /// Asynchronously retrieves a User object from the database by email address.
+    /// </summary>
+    /// <param name="email">The email address to search for in the User records.</param>
+    /// <returns>A Task resulting in the User object with the specified email.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when no User with the given email is found.</exception>
+    public async Task<User> GetUserByEmail(string email)
+    {
+        var user = await Context.Users.FirstOrDefaultAsync(x => x.Email == email);
+        
+        if (user == null)
+        {
+            throw new InvalidOperationException("User not found");
+        }
+        
+        return user;
     }
 }

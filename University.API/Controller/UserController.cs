@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using University.Domain;
 using University.Infrastructure;
 using University.Repository;
+using University.Service;
 
 namespace University.Controller;
 
@@ -14,12 +15,18 @@ namespace University.Controller;
 public class UserController : ControllerBase
 {
     private readonly UserRepository _userRepository;
-
+    private readonly IUserService _userService;
+    
     /// <summary>
     /// Default parameterized constructor.
     /// </summary>
     /// <param name="userContext"></param>
-    public UserController(UserContext userContext) => _userRepository = new UserRepository(userContext);
+    /// <param name="userService"></param>
+    public UserController(UserContext userContext, IUserService userService)
+    {
+        _userRepository = new UserRepository(userContext);
+        _userService = userService;
+    }
 
     /// <summary>
     /// Method to get user by guid.
@@ -133,5 +140,13 @@ public class UserController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+    }
+
+    [HttpGet("login/{email}&{passwordHash}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<string>> Login(String email, String passwordHash)
+    {
+        return Ok(await _userService.Login(email, passwordHash));
     }
 }
