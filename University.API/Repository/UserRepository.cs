@@ -13,7 +13,7 @@ public class UserRepository
     /// <summary>
     /// An instance of <see cref="UserContext"/>.
     /// </summary>
-    public UserContext Context { get; }
+    private UserContext Context { get; }
 
     /// <summary>
     /// Default parameterized constructor. Parameter should not be null.
@@ -39,15 +39,60 @@ public class UserRepository
     /// <returns>An instance of <see cref="User"/> if exists, otherwise null.</returns>
     public async Task<User?> GetUserById(Guid id) => await Context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
+    /// <summary>
+    /// Async method that ensures that user exists.
+    /// </summary>
+    /// <param name="id">Guid of user.</param>
+    /// <returns>true if user exists, otherwise false</returns>
+    public async Task<bool> IsUserExist(Guid id)  => await Context.Users.AnyAsync(u => u.Id == id);
+    
+    /// <summary>
+    /// Async method to delete user.
+    /// </summary>
+    /// <param name="id">Guid of user.</param>
     public async Task DeleteUser(Guid id)
     {
-        User user = await GetUserById(id);
+        var user = await GetUserById(id);
         if (user == null)
         {
             return;
         }
         
         Context.Users.Remove(user);
+        await Context.SaveChangesAsync();
+    }
+
+    /// <summary>
+    /// Async method to update user fully. If user's field value is null, it will replace existing value.
+    /// </summary>
+    /// <param name="id">Guid of user.</param>
+    /// <param name="user">An instance of <see cref="User"/>.</param>
+    public async Task UpdateUserFully(Guid id, User user)
+    {
+        if (!await IsUserExist(id))
+        {
+            return;
+        }
+        
+        Context.Users.Update(user);
+        await Context.SaveChangesAsync();
+    }
+    
+    /// <summary>
+    /// Asynchronous method to update user partially. New value will replace existing one only if new value is not null.
+    /// </summary>
+    /// <param name="id">Guid of user.</param>
+    /// <param name="user">An instance of <see cref="User"/>.</param>
+    public async Task UpdateUserPartially(Guid id, User user)
+    {
+        var currentUser = await GetUserById(id);
+        if (currentUser == null)
+        {
+            return;
+        }
+        
+        var updatedUser = currentUser.GetPartiallyUpdatedUser(user);
+        Context.Users.Update(updatedUser);
         await Context.SaveChangesAsync();
     }
 }
