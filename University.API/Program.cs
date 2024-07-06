@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using University.Infrastructure;
+using University.Repository;
+using University.Service;
+using University.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +24,14 @@ builder.Services.AddSwaggerGen();
 // TODO: Replace with normal database.
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseInMemoryDatabase("users"));
+
+builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
+
+builder.Services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 
 var app = builder.Build();
 
