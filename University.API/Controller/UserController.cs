@@ -35,4 +35,82 @@ public class UserController : ControllerBase
 
         return user == null ? NotFound() : Ok(user);
     }
+
+    /// <summary>
+    /// Method to create a new user.
+    /// </summary>
+    /// <param name="user">An instance of <see cref="User"/>.</param>
+    /// <returns></returns>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<User>> CreateUser(User user)
+    {
+        await _userRepository.CreateUser(user);
+        var createdUserId = user.Id;
+        
+        var createdUser  = await  _userRepository.GetUserById(createdUserId);
+        if (createdUser == null)
+        {
+            return BadRequest();
+        }
+        
+        return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
+    }
+
+    /// <summary>
+    /// Method to update a user completely.
+    /// </summary>
+    /// <param name="id">Route parameter, Guid of user.</param>
+    /// <param name="user">An instance of <see cref="User"/> to update.</param>
+    /// <returns></returns>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<User>> UpdateUserPut(Guid id, User user)
+    {
+        if (!id.Equals(user.Id))
+        {
+            return BadRequest();
+        }
+        
+        await _userRepository.UpdateUserFully(id, user);
+        return Ok();
+    }
+
+    /// <summary>
+    /// Method to update a user partially.
+    /// </summary>
+    /// <param name="id">Route parameter, Guid of user.</param>
+    /// <param name="user">An instance of <see cref="User"/> to update.</param>
+    /// <returns></returns>
+    [HttpPatch("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<User>> UpdateUserPatch(Guid id, User user)
+    {
+        if (!id.Equals(user.Id))
+        {
+            return BadRequest();
+        }
+        
+        await _userRepository.UpdateUserPartially(id, user);
+        return Ok();
+    }
+    
+    /// <summary>
+    /// Method to delete a user.
+    /// </summary>
+    /// <param name="id">User's guid</param>
+    /// <returns></returns>
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> DeleteUser(Guid id)
+    {
+        await  _userRepository.DeleteUser(id);
+        return Ok();
+    }
 }

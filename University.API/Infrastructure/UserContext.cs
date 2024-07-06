@@ -12,7 +12,7 @@ public class UserContext : DbContext
     /// <summary>
     /// DbSet for <see cref="User"/>.
     /// </summary>
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> Users { get; init; }
 
     /// <summary>
     /// Parameterized constructor.

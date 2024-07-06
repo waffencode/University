@@ -12,17 +12,24 @@ public class User
     /// User's unique identifier.
     /// </summary>
     public Guid Id { get; init; } = Guid.NewGuid();
+    
     /// <summary>
     /// User's login name.
     /// </summary>
+    [StringLength(maximumLength: 64, MinimumLength = 3)]
     public string? Username { get; set; }
+    
     /// <summary>
     /// User's hashed password.
     /// </summary>
+    /// <remarks>Maximum length is defined as SHA-256 hash string length.</remarks>
+    [StringLength(maximumLength: 64)]
     public string? PasswordHash { get; set; }
+    
     /// <summary>
     /// User's email address.
     /// </summary>
+    [StringLength(maximumLength: 254, MinimumLength = 3)]
     [EmailAddress(ErrorMessage = "Invalid email address.")]
     public string? Email { get; set; }
 
@@ -44,5 +51,27 @@ public class User
         Username = username;
         Email = email;
         PasswordHash = passwordHash;
+    }
+
+    /// <summary>
+    /// Creates a new User object with properties selectively updated from a target User.
+    /// </summary>
+    /// <param name="target">The User object containing the new data to update.</param>
+    /// <returns>A new User object with updated properties.</returns>
+    /// <remarks>
+    /// This method creates a new User instance with its properties set to the values from the target User.
+    /// If a property in the target User is null, the corresponding property in the new User retains current value.
+    /// </remarks>
+    public User GetPartiallyUpdatedUser(User target)
+    {
+        var user = new User
+        {
+            Id = target.Id,
+            Username = target.Username ?? Username,
+            Email = target.Email ?? Email,
+            PasswordHash = target.PasswordHash ?? PasswordHash
+        };
+
+        return user;
     }
 }
