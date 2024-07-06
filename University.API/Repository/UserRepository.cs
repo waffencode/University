@@ -50,12 +50,13 @@ public class UserRepository
     /// Async method to delete user.
     /// </summary>
     /// <param name="id">Guid of user.</param>
+    /// <exception cref="InvalidOperationException">Thrown if user not found.</exception>
     public async Task DeleteUser(Guid id)
     {
         var user = await GetUserById(id);
         if (user == null)
         {
-            return;
+            throw new InvalidOperationException("User not found");
         }
         
         Context.Users.Remove(user);
@@ -67,11 +68,12 @@ public class UserRepository
     /// </summary>
     /// <param name="id">Guid of user.</param>
     /// <param name="user">An instance of <see cref="User"/>.</param>
+    /// <exception cref="InvalidOperationException">Thrown if user not found.</exception>
     public async Task UpdateUserFully(Guid id, User user)
     {
         if (!await IsUserExist(id))
         {
-            return;
+            throw new InvalidOperationException("User not found");
         }
         
         Context.Users.Update(user);
@@ -83,12 +85,13 @@ public class UserRepository
     /// </summary>
     /// <param name="id">Guid of user.</param>
     /// <param name="user">An instance of <see cref="User"/>.</param>
+    /// <exception cref="InvalidOperationException">Thrown if user not found.</exception>
     public async Task UpdateUserPartially(Guid id, User user)
     {
         var currentUser = await GetUserById(id);
         if (currentUser == null)
         {
-            return;
+            throw new InvalidOperationException("User not found");
         }
         
         var updatedUser = currentUser.GetPartiallyUpdatedUser(user);

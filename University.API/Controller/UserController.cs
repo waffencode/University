@@ -74,9 +74,16 @@ public class UserController : ControllerBase
         {
             return BadRequest();
         }
-        
-        await _userRepository.UpdateUserFully(id, user);
-        return Ok();
+
+        try
+        {
+            await _userRepository.UpdateUserFully(id, user);
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     /// <summary>
@@ -95,9 +102,16 @@ public class UserController : ControllerBase
         {
             return BadRequest();
         }
-        
-        await _userRepository.UpdateUserPartially(id, user);
-        return Ok();
+
+        try
+        {
+            await _userRepository.UpdateUserPartially(id, user);
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
     
     /// <summary>
@@ -107,10 +121,17 @@ public class UserController : ControllerBase
     /// <returns></returns>
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeleteUser(Guid id)
     {
-        await  _userRepository.DeleteUser(id);
-        return Ok();
+        try
+        {
+            await _userRepository.DeleteUser(id);
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 }
