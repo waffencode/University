@@ -7,17 +7,27 @@ using University.Domain;
 
 namespace University.Utility;
 
+/// <summary>
+/// Encapsulates functionality for generating JWT tokens.
+/// </summary>
+/// <param name="options">Options from application settings, required to provide signing credentials.</param>
+/// <author>waffencode@gmail.com</author>
 public class JwtTokenProvider(IOptions<JwtOptions> options) : IJwtTokenProvider
 {
     private readonly JwtOptions _options = options.Value;
     
+    /// <summary>
+    /// Generates JWT token based on provided user data.
+    /// </summary>
+    /// <param name="user"><see cref="User" /> object to generate JWT token for.</param>
+    /// <returns>Generated JWT token.</returns>
     public string GenerateJwtToken(User user)
     {
         Claim[] claims = [new Claim("userId", user.Id.ToString())];
         
         var signingCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)), 
-        SecurityAlgorithms.HmacSha256);
+                key: new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)), 
+                algorithm: SecurityAlgorithms.HmacSha256);
     
         var token = new JwtSecurityToken(
             claims: claims,

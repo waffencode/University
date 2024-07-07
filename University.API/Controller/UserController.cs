@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using University.Domain;
 using University.Infrastructure;
@@ -34,6 +35,7 @@ public class UserController : ControllerBase
     /// <param name="id">Guid of user.</param>
     /// <returns>An instance of <see cref="User"/> if exists, otherwise null.</returns>
     [HttpGet("{id:guid}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<User>> GetUser(Guid id)
@@ -49,6 +51,7 @@ public class UserController : ControllerBase
     /// <param name="user">An instance of <see cref="User"/>.</param>
     /// <returns></returns>
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<User>> CreateUser(User user)
@@ -72,6 +75,7 @@ public class UserController : ControllerBase
     /// <param name="user">An instance of <see cref="User"/> to update.</param>
     /// <returns></returns>
     [HttpPut("{id:guid}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -100,6 +104,7 @@ public class UserController : ControllerBase
     /// <param name="user">An instance of <see cref="User"/> to update.</param>
     /// <returns></returns>
     [HttpPatch("{id:guid}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -127,6 +132,7 @@ public class UserController : ControllerBase
     /// <param name="id">User's guid</param>
     /// <returns></returns>
     [HttpDelete("{id:guid}")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> DeleteUser(Guid id)
@@ -145,8 +151,19 @@ public class UserController : ControllerBase
     [HttpGet("login/{email}&{passwordHash}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<string>> Login(String email, String passwordHash)
+    public async Task<ActionResult<string>> Login(string email, string passwordHash)
     {
-        return Ok(await _userService.Login(email, passwordHash));
+        var token = await _userService.Login(email, passwordHash);
+        HttpContext.Response.Cookies.Append("token", token);
+        return Ok(token);
+    }
+
+    [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> Register(string email, string passwordHash)
+    {
+        await _userService.Register(email, passwordHash);
+        return Ok();
     }
 }

@@ -33,6 +33,8 @@ public class User
     [EmailAddress(ErrorMessage = "Invalid email address.")]
     public string? Email { get; set; }
 
+    public UserRole Role { get; set; } = UserRole.Unauthorized;
+    
     /// <summary>
     /// Default constructor.
     /// </summary>
@@ -45,12 +47,14 @@ public class User
     /// <param name="username">User's login name.</param>
     /// <param name="email">User's email address.</param>
     /// <param name="passwordHash">User's hashed password.</param>
-    public User(Guid id, string? username, string? email, string? passwordHash)
+    /// <param name="role">User's role.</param>
+    public User(Guid id, string? username, string? email, string? passwordHash, UserRole role)
     {
         Id = id;
         Username = username;
         Email = email;
         PasswordHash = passwordHash;
+        Role = role;
     }
 
     /// <summary>
@@ -69,7 +73,8 @@ public class User
             Id = target.Id,
             Username = target.Username ?? Username,
             Email = target.Email ?? Email,
-            PasswordHash = target.PasswordHash ?? PasswordHash
+            PasswordHash = target.PasswordHash ?? PasswordHash,
+            Role = target.Role
         };
 
         return user;
