@@ -1,3 +1,4 @@
+using University.Domain;
 using University.Repository;
 using University.Utility;
 
@@ -14,5 +15,17 @@ public class UserService(IUserRepository userRepository, IJwtTokenProvider jwtTo
         }
 
         throw new InvalidOperationException("Email or password is wrong");
+    }
+
+    public async Task Register(string email, string passwordHash)
+    {
+        var user = new User()
+        {
+            Email = email,
+            PasswordHash = passwordHash,
+            Role = UserRole.Unauthorized
+        };
+        
+        await userRepository.CreateUser(user);
     }
 }
