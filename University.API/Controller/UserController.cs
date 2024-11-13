@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using University.Domain;
@@ -43,6 +44,17 @@ public class UserController : ControllerBase
         var user = await _userRepository.GetUserById(id);
 
         return user == null ? NotFound() : Ok(user);
+    }
+    
+    [HttpGet]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<User>))]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult<List<User>>> GetAllUsers()
+    {
+        var users = await _userRepository.GetAllUsers();
+
+        return users.Count== 0? NoContent() : Ok(users);
     }
 
     /// <summary>
@@ -148,7 +160,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("login/{email}&{passwordHash}")]
+    [HttpGet("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<string>> Login(string email, string passwordHash)
@@ -172,5 +184,26 @@ public class UserController : ControllerBase
     {
         await _userService.Register(email, passwordHash);
         return Ok();
+    }
+    
+    // For testing purposes.
+    [HttpGet("whoami")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<string>> Whoami()
+    {
+        var rawId = User.FindFirst("userId")?.Value;
+
+        if (string.IsNullOrEmpty(rawId))
+        {
+            return NotFound("ID not found");
+        }
+
+        var id = Guid.Parse(rawId);
+        
+        var email = (await _userRepository.GetUserById(id))?.Email;
+        
+        return Ok(email);
     }
 }

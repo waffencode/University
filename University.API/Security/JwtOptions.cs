@@ -1,4 +1,4 @@
-namespace University.Utility;
+namespace University.Security;
 
 public class JwtOptions
 {

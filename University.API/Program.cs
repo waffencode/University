@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using University.Infrastructure;
 using University.Repository;
+using University.Security;
 using University.Service;
-using University.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 

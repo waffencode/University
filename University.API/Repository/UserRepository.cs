@@ -32,6 +32,8 @@ public class UserRepository : IUserRepository
         await Context.SaveChangesAsync();
     }
 
+    public async Task<List<User>> GetAllUsers() => await Context.Users.ToListAsync();
+
     /// <summary>
     /// Async method that finds user by guid.
     /// </summary>

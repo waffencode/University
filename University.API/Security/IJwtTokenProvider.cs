@@ -1,6 +1,6 @@
 using University.Domain;
 
-namespace University.Utility;
+namespace University.Security;
 
 public interface IJwtTokenProvider
 {
