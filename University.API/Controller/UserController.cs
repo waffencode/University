@@ -150,12 +150,19 @@ public class UserController : ControllerBase
 
     [HttpGet("login/{email}&{passwordHash}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<string>> Login(string email, string passwordHash)
     {
-        var token = await _userService.Login(email, passwordHash);
-        HttpContext.Response.Cookies.Append("token", token);
-        return Ok(token);
+        try
+        {
+            var token = await _userService.Login(email, passwordHash);
+            HttpContext.Response.Cookies.Append("token", token);
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPost("register")]

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using University.Infrastructure;
 using University.Repository;
 using University.Service;
