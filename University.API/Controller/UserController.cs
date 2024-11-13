@@ -47,14 +47,14 @@ public class UserController : ControllerBase
     }
     
     [HttpGet]
-    [Authorize]
+    [Authorize(Policy = "RequireAdminRole")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<User>))]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<ActionResult<List<User>>> GetAllUsers()
     {
         var users = await _userRepository.GetAllUsers();
 
-        return users.Count== 0? NoContent() : Ok(users);
+        return users.Count == 0? NoContent() : Ok(users);
     }
 
     /// <summary>

@@ -32,7 +32,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 
+// Custom security policy, defined in Security.ApiSecurityExtensions.
 builder.Services.AddApiAuthentication(builder.Configuration);
+builder.Services.AddApiAuthorization();
 
 var app = builder.Build();
 

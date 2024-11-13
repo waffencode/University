@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using University.Domain;
 
 namespace University.Security;
 
@@ -40,5 +41,32 @@ public static class ApiSecurityExtensions
         {
             throw new NullReferenceException("JWTOptions is null");
         }
+    }
+
+    public static void AddApiAuthorization(this IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("RequireAdminRole", policy => 
+                policy.RequireRole(UserRole.Admin.ToString()));
+
+            options.AddPolicy("RequireManagerRole", policy => 
+                policy.RequireAssertion(context =>
+                    context.User.IsInRole(UserRole.Admin.ToString()) ||
+                    context.User.IsInRole(UserRole.Manager.ToString())));
+
+            options.AddPolicy("RequireTeacherRole", policy => 
+                policy.RequireAssertion(context =>
+                    context.User.IsInRole(UserRole.Admin.ToString()) ||
+                    context.User.IsInRole(UserRole.Manager.ToString()) ||
+                    context.User.IsInRole(UserRole.Teacher.ToString())));
+
+            options.AddPolicy("RequireStudentRole", policy => 
+                policy.RequireAssertion(context =>
+                    context.User.IsInRole(UserRole.Admin.ToString()) ||
+                    context.User.IsInRole(UserRole.Manager.ToString()) ||
+                    context.User.IsInRole(UserRole.Teacher.ToString()) ||
+                    context.User.IsInRole(UserRole.Student.ToString())));
+        });
     }
 }
