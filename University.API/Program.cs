@@ -20,9 +20,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// TODO: Replace with normal database.
 builder.Services.AddDbContext<UserContext>(options =>
-    options.UseInMemoryDatabase("users"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
 
