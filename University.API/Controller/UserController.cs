@@ -189,8 +189,10 @@ public class UserController : ControllerBase
     [Authorize(Policy = "RequireAdminRole")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> AuthorizeUser(Guid requestId)
+    public async Task<ActionResult> AuthorizeUser(string requestStringId)
     {
+        var requestId = Guid.Parse(requestStringId);
+        
         if (requestId.Equals( Guid.Empty))
         {
             return BadRequest();

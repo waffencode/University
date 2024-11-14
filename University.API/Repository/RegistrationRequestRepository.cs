@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using University.Domain;
 using University.Infrastructure;
 
@@ -5,9 +6,9 @@ namespace University.Repository;
 
 public class RegistrationRequestRepository : IRegistrationRequestRepository
 {
-    private RegistrationRequestContext Context { get; }
+    private UserContext Context { get; }
     
-    public RegistrationRequestRepository(RegistrationRequestContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
+    public RegistrationRequestRepository(UserContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
     
     public async Task CreateRegistrationRequest(RegistrationRequest registrationRequest)
     {
@@ -21,8 +22,6 @@ public class RegistrationRequestRepository : IRegistrationRequestRepository
         await Context.SaveChangesAsync();
     }
 
-    public async Task<RegistrationRequest?> GetRegistrationRequestById(Guid registrationRequestId)
-    {
-        return await Context.RegistrationRequests.FindAsync(registrationRequestId);
-    }
+    public async Task<RegistrationRequest?> GetRegistrationRequestById(Guid registrationRequestId) => 
+        await Context.RegistrationRequests.Where(x => x.Id == registrationRequestId).Include(s => s.User).FirstOrDefaultAsync();
 }

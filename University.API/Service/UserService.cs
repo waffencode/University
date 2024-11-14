@@ -19,7 +19,7 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
 
     public async Task Register(string email, string passwordHash)
     {
-        var user = new User()
+        var user = new User
         {
             Email = email,
             PasswordHash = passwordHash,
@@ -28,7 +28,7 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
         
         await userRepository.CreateUser(user);
 
-        var registrationRequest = new RegistrationRequest()
+        var registrationRequest = new RegistrationRequest
         {
             User = user,
             RequestedRole = UserRole.Student
@@ -43,7 +43,7 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
         
         var user = registrationRequest.User;
         user.Role = registrationRequest.RequestedRole;
-        await userRepository.UpdateUserPartially(user.Id, user);
+        await userRepository.UpdateUserFully(user.Id, user);
         registrationRequest.Status = RegistrationRequestStatus.Accepted;
         await registrationRequestRepository.UpdateRegistrationRequest(registrationRequest.Id, registrationRequest);
     }

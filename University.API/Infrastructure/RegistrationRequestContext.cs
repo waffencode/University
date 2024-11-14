@@ -9,11 +9,11 @@ public class RegistrationRequestContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<User>()
-            .HasMany<RegistrationRequest>()
-            .WithOne(p => p.User)
+        modelBuilder.Entity<RegistrationRequest>()
+            .HasOne(p => p.User)
+            .WithMany()
             .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
     
     public RegistrationRequestContext(DbContextOptions<RegistrationRequestContext> options) : base(options) { }
