@@ -19,4 +19,6 @@ public interface IUserRepository
     public Task UpdateUserPartially(Guid id, User user);
     
     public Task<User> GetUserByEmail(string email);
+
+    public Task<List<User>> GetUnauthorisedUsers();
 }

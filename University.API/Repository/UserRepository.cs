@@ -118,4 +118,6 @@ public class UserRepository : IUserRepository
         
         return user;
     }
+
+    public async Task<List<User>> GetUnauthorisedUsers() => await Context.Users.Where(x => x.Role == UserRole.Unauthorized).ToListAsync();
 }

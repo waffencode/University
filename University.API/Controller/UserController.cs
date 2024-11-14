@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using University.Domain;
@@ -183,6 +182,21 @@ public class UserController : ControllerBase
     public async Task<ActionResult> Register(string email, string passwordHash)
     {
         await _userService.Register(email, passwordHash);
+        return Ok();
+    }
+    
+    [HttpPost("authorize")]
+    [Authorize(Policy = "RequireAdminRole")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> AuthorizeUser(Guid requestId)
+    {
+        if (requestId.Equals( Guid.Empty))
+        {
+            return BadRequest();
+        }
+        
+        await _userService.AuthorizeUser(requestId);
         return Ok();
     }
     

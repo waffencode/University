@@ -23,10 +23,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
+builder.Services.AddDbContext<RegistrationRequestContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+
 builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
 
 builder.Services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRegistrationRequestRepository, RegistrationRequestRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
