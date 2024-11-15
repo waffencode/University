@@ -9,4 +9,6 @@ public interface IRegistrationRequestRepository
     public Task UpdateRegistrationRequest(Guid id, RegistrationRequest registrationRequest);
 
     public Task<RegistrationRequest?> GetRegistrationRequestById(Guid registrationRequestId);
+    
+    public Task<List<RegistrationRequest>> GetPendingRegistrationRequests();
 }

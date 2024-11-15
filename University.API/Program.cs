@@ -23,8 +23,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
-builder.Services.AddDbContext<RegistrationRequestContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+// builder.Services.AddDbContext<RegistrationRequestContext>(options =>
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
 
@@ -46,7 +46,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// TODO: Find way to store timestamp in database without using this.
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();

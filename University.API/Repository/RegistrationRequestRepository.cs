@@ -23,5 +23,12 @@ public class RegistrationRequestRepository : IRegistrationRequestRepository
     }
 
     public async Task<RegistrationRequest?> GetRegistrationRequestById(Guid registrationRequestId) => 
-        await Context.RegistrationRequests.Where(x => x.Id == registrationRequestId).Include(s => s.User).FirstOrDefaultAsync();
+        await Context.RegistrationRequests.Where(x => x.Id == registrationRequestId)
+                                            .Include(s => s.User)
+                                            .FirstOrDefaultAsync();
+
+    public async Task<List<RegistrationRequest>> GetPendingRegistrationRequests() => 
+        await Context.RegistrationRequests.Where(x => x.Status == RegistrationRequestStatus.Pending)
+                                            .Include(s => s.User)
+                                            .ToListAsync();
 }

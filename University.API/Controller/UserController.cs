@@ -16,6 +16,7 @@ namespace University.Controller;
 public class UserController : ControllerBase
 {
     private readonly UserRepository _userRepository;
+    private readonly RegistrationRequestRepository _registrationRequestRepository;
     private readonly IUserService _userService;
     
     /// <summary>
@@ -26,6 +27,7 @@ public class UserController : ControllerBase
     public UserController(UserContext userContext, IUserService userService)
     {
         _userRepository = new UserRepository(userContext);
+        _registrationRequestRepository = new RegistrationRequestRepository(userContext);
         _userService = userService;
     }
 
@@ -191,15 +193,32 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> AuthorizeUser(string requestStringId)
     {
-        var requestId = Guid.Parse(requestStringId);
-        
-        if (requestId.Equals( Guid.Empty))
+        try
         {
-            return BadRequest();
-        }
+            var requestId = Guid.Parse(requestStringId);
         
-        await _userService.AuthorizeUser(requestId);
-        return Ok();
+            if (requestId.Equals( Guid.Empty))
+            {
+                return BadRequest("requestStringId should not contain null GUID");
+            }
+        
+            await _userService.AuthorizeUser(requestId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    
+    [HttpGet("pendingRequests")]
+    [Authorize(Policy = "RequireAdminRole")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult<List<RegistrationRequest>>> GetPendingRegistrationRequests()
+    {
+        var requests = await _registrationRequestRepository.GetPendingRegistrationRequests();
+        return requests.Count == 0 ? NoContent() : Ok(requests);
     }
     
     // For testing purposes.
