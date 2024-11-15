@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using University.Domain;
 
-namespace University.Utility;
+namespace University.Security;
 
 /// <summary>
 /// Encapsulates functionality for generating JWT tokens.
@@ -23,7 +23,7 @@ public class JwtTokenProvider(IOptions<JwtOptions> options) : IJwtTokenProvider
     /// <returns>Generated JWT token.</returns>
     public string GenerateJwtToken(User user)
     {
-        Claim[] claims = [new Claim("userId", user.Id.ToString())];
+        Claim[] claims = [new("userId", user.Id.ToString()), new(ClaimTypes.Role, user.Role.ToString())];
         
         var signingCredentials = new SigningCredentials(
                 key: new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)), 

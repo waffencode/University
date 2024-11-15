@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using University.Infrastructure;
 using University.Repository;
+using University.Security;
 using University.Service;
-using University.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,19 +20,24 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// TODO: Replace with normal database.
 builder.Services.AddDbContext<UserContext>(options =>
-    options.UseInMemoryDatabase("users"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
+
+// builder.Services.AddDbContext<RegistrationRequestContext>(options =>
+//     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
 
 builder.Services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRegistrationRequestRepository, RegistrationRequestRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 
+// Custom security policy, defined in Security.ApiSecurityExtensions.
 builder.Services.AddApiAuthentication(builder.Configuration);
+builder.Services.AddApiAuthorization();
 
 var app = builder.Build();
 
@@ -42,6 +46,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// TODO: Find way to store timestamp in database without using this.
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 app.UseAuthentication();
 app.UseAuthorization();

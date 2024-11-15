@@ -1,10 +1,10 @@
 using University.Domain;
 using University.Repository;
-using University.Utility;
+using University.Security;
 
 namespace University.Service;
 
-public class UserService(IUserRepository userRepository, IJwtTokenProvider jwtTokenProvider) : IUserService
+public class UserService(IUserRepository userRepository, IRegistrationRequestRepository registrationRequestRepository, IJwtTokenProvider jwtTokenProvider) : IUserService
 {
     public async Task<string> Login(string email, string passwordHash)
     {
@@ -19,7 +19,7 @@ public class UserService(IUserRepository userRepository, IJwtTokenProvider jwtTo
 
     public async Task Register(string email, string passwordHash)
     {
-        var user = new User()
+        var user = new User
         {
             Email = email,
             PasswordHash = passwordHash,
@@ -27,5 +27,24 @@ public class UserService(IUserRepository userRepository, IJwtTokenProvider jwtTo
         };
         
         await userRepository.CreateUser(user);
+
+        var registrationRequest = new RegistrationRequest
+        {
+            User = user,
+            RequestedRole = UserRole.Student
+        };
+        
+        await registrationRequestRepository.CreateRegistrationRequest(registrationRequest);
+    }
+
+    public async Task AuthorizeUser(Guid registrationRequestId)
+    {
+        var registrationRequest = await registrationRequestRepository.GetRegistrationRequestById(registrationRequestId);
+        
+        var user = registrationRequest.User;
+        user.Role = registrationRequest.RequestedRole;
+        await userRepository.UpdateUserFully(user.Id, user);
+        registrationRequest.Status = RegistrationRequestStatus.Accepted;
+        await registrationRequestRepository.UpdateRegistrationRequest(registrationRequest.Id, registrationRequest);
     }
 }
