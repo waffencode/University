@@ -88,6 +88,7 @@ public class UserRepository : IUserRepository
     /// <param name="id">Guid of user.</param>
     /// <param name="user">An instance of <see cref="User"/>.</param>
     /// <exception cref="InvalidOperationException">Thrown if user not found.</exception>
+    // TODO: Fix error.
     public async Task UpdateUserPartially(Guid id, User user)
     {
         var currentUser = await GetUserById(id);

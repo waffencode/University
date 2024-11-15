@@ -145,9 +145,10 @@ public class UserController : ControllerBase
     /// <param name="id">User's guid</param>
     /// <returns></returns>
     [HttpDelete("{id:guid}")]
-    [Authorize]
+    [Authorize(Policy = "RequireAdminRole")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    // TODO: Prohibit self deletion.
     public async Task<ActionResult> DeleteUser(Guid id)
     {
         try
@@ -176,6 +177,15 @@ public class UserController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+    }
+
+    [HttpGet("logout")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult Logout()
+    {
+        HttpContext.Response.Cookies.Delete("token");
+        return Ok();
     }
 
     [HttpPost("register")]
@@ -222,11 +232,12 @@ public class UserController : ControllerBase
     }
     
     // For testing purposes.
+    // TODO: Remove.
     [HttpGet("whoami")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<string>> Whoami()
+    public async Task<ActionResult<User>> Whoami()
     {
         var rawId = User.FindFirst("userId")?.Value;
 
@@ -236,9 +247,8 @@ public class UserController : ControllerBase
         }
 
         var id = Guid.Parse(rawId);
+        var user = (await _userRepository.GetUserById(id));
         
-        var email = (await _userRepository.GetUserById(id))?.Email;
-        
-        return Ok(email);
+        return Ok(user);
     }
 }
