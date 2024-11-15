@@ -23,9 +23,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
-// builder.Services.AddDbContext<RegistrationRequestContext>(options =>
-//     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
-
 builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
 
 builder.Services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
