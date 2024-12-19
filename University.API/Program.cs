@@ -10,9 +10,14 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("default", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("https://localhost:3000")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
+        policy.WithOrigins("http://localhost:5432")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -50,6 +55,6 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
-app.UseCors("default");
 app.MapControllers();
+app.UseCors("default");
 app.Run();

@@ -10,7 +10,7 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
     public async Task<string> Login(string email, string passwordHash)
     {
         var user = await userRepository.GetUserByEmail(email);
-        if (user.PasswordHash != null && user.PasswordHash.Equals(passwordHash))
+        if (user.PasswordHash is not null && !passwordHash.Equals(string.Empty) && user.PasswordHash.Equals(passwordHash))
         {
             return jwtTokenProvider.GenerateJwtToken(user);
         }

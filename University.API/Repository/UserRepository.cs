@@ -110,9 +110,9 @@ public class UserRepository : IUserRepository
     /// <exception cref="InvalidOperationException">Thrown when no User with the given email is found.</exception>
     public async Task<User> GetUserByEmail(string email)
     {
-        var user = await Context.Users.FirstOrDefaultAsync(x => x.Email == email);
+        var user = await Context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
         
-        if (user == null)
+        if (user is null)
         {
             throw new InvalidOperationException("User not found");
         }

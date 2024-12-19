@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using University.Domain;
 using University.Infrastructure;
@@ -169,13 +170,33 @@ public class UserController : ControllerBase
     {
         try
         {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = false,
+                Secure = true,
+                IsEssential = true,
+            };
+
             var token = await _userService.Login(email, passwordHash);
-            HttpContext.Response.Cookies.Append("token", token);
-            return Ok();
+            if (!token.Equals(string.Empty))
+            {
+                HttpContext.Response.Cookies.Append("token", token, cookieOptions);
+            }
+            else
+            {
+                throw new Exception("Authentication token is null or empty.");
+            }
+            
+            var user = await _userRepository.GetUserByEmail(email);
+            return Ok(user.Id);
         }
         catch (InvalidOperationException ex)
         {
             return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 
