@@ -1,9 +1,11 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using University.Domain;
 using University.Infrastructure;
 using University.Repository;
+using University.Security;
 using University.Service;
 
 namespace University.Controller;
@@ -19,17 +21,19 @@ public class UserController : ControllerBase
     private readonly UserRepository _userRepository;
     private readonly RegistrationRequestRepository _registrationRequestRepository;
     private readonly IUserService _userService;
+    private readonly ILogger<UserController> _logger;
+    private readonly JwtOptions _options;
     
     /// <summary>
     /// Default parameterized constructor.
     /// </summary>
-    /// <param name="userContext"></param>
-    /// <param name="userService"></param>
-    public UserController(UserContext userContext, IUserService userService)
+    public UserController(UserContext userContext, IUserService userService, ILogger<UserController> logger, IOptions<JwtOptions> options)
     {
         _userRepository = new UserRepository(userContext);
         _registrationRequestRepository = new RegistrationRequestRepository(userContext);
         _userService = userService;
+        _logger = logger;
+        _options = options.Value;
     }
 
     /// <summary>
@@ -45,7 +49,7 @@ public class UserController : ControllerBase
     {
         var user = await _userRepository.GetUserById(id);
 
-        return user == null ? NotFound() : Ok(user);
+        return user is null ? NotFound() : Ok(user);
     }
     
     [HttpGet]
@@ -73,8 +77,8 @@ public class UserController : ControllerBase
         await _userRepository.CreateUser(user);
         var createdUserId = user.Id;
         
-        var createdUser  = await  _userRepository.GetUserById(createdUserId);
-        if (createdUser == null)
+        var createdUser = await _userRepository.GetUserById(createdUserId);
+        if (createdUser is null)
         {
             return BadRequest();
         }
@@ -103,6 +107,7 @@ public class UserController : ControllerBase
         try
         {
             await _userRepository.UpdateUserFully(id, user);
+            _logger.LogInformation("User <{id}> successfully updated their info.", id);
             return Ok();
         }
         catch (InvalidOperationException ex)
@@ -175,15 +180,18 @@ public class UserController : ControllerBase
                 HttpOnly = false,
                 Secure = true,
                 IsEssential = true,
+                Expires = DateTime.Now.AddHours(_options.ExpireHours)
             };
 
             var token = await _userService.Login(email, passwordHash);
             if (!token.Equals(string.Empty))
             {
                 HttpContext.Response.Cookies.Append("token", token, cookieOptions);
+                _logger.LogInformation("User <{email}> successfully logged in.", email);
             }
             else
             {
+                _logger.LogInformation("Failed to log in <{email}>: null token is passed (hash={hash}).", email, token.GetHashCode());
                 throw new Exception("Authentication token is null or empty.");
             }
             
@@ -205,6 +213,7 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult Logout()
     {
+        _logger.LogInformation("User <{email}> logged out.", User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst("userId")?.Value);
         HttpContext.Response.Cookies.Delete("token");
         return Ok();
     }
@@ -212,9 +221,11 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    // TODO: Replace arguments with single User parameter.
     public async Task<ActionResult> Register(string email, string passwordHash)
     {
         await _userService.Register(email, passwordHash);
+        _logger.LogInformation("User <{email}> successfully registered.", email);
         return Ok();
     }
     

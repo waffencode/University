@@ -23,7 +23,7 @@ public class JwtTokenProvider(IOptions<JwtOptions> options) : IJwtTokenProvider
     /// <returns>Generated JWT token.</returns>
     public string GenerateJwtToken(User user)
     {
-        Claim[] claims = [new("userId", user.Id.ToString()), new(ClaimTypes.Role, user.Role.ToString())];
+        Claim[] claims = [new("userId", user.Id.ToString()), new(ClaimTypes.Role, user.Role.ToString()), new(ClaimTypes.Email, user.Email)];
         
         var signingCredentials = new SigningCredentials(
                 key: new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)), 

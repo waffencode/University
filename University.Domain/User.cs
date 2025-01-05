@@ -31,7 +31,7 @@ public class User
     /// </summary>
     [StringLength(maximumLength: 254, MinimumLength = 3)]
     [EmailAddress(ErrorMessage = "Invalid email address.")]
-    public string? Email { get; set; }
+    public string Email { get; set; }
     
     public UserRole Role { get; set; } = UserRole.Unauthorized;
     
@@ -50,7 +50,7 @@ public class User
     /// <param name="email">User's email address.</param>
     /// <param name="passwordHash">User's hashed password.</param>
     /// <param name="role">User's role.</param>
-    public User(Guid id, string? username, string? email, string? passwordHash, UserRole role, string? fullName)
+    public User(Guid id, string? username, string email, string? passwordHash, UserRole role, string? fullName)
     {
         Id = id;
         Username = username;
@@ -75,7 +75,7 @@ public class User
         {
             Id = target.Id,
             Username = target.Username ?? Username,
-            Email = target.Email ?? Email,
+            Email = target.Email,
             PasswordHash = target.PasswordHash ?? PasswordHash,
             Role = target.Role,
             FullName = target.FullName ?? FullName
