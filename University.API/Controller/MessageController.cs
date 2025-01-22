@@ -39,4 +39,14 @@ public class MessageController : ControllerBase
         var user = await _userRepository.GetUserById(id) ?? throw new Exception("User not found");
         return Ok(await _messageRepository.GetMessagesByReceiver(user));
     }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeleteMessage(Guid id)
+    {
+        await _messageRepository.DeleteMessage(id);
+        return Ok();
+    }
 }

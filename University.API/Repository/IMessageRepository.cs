@@ -10,7 +10,7 @@ public interface IMessageRepository
     
     public Task AddMessage(Message message);
     
-    public Task DeleteMessage(Message message);
+    public Task DeleteMessage(Guid id);
     
     public Task UpdateMessage(Message message);
 }

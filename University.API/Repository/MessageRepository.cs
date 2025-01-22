@@ -28,13 +28,27 @@ public class MessageRepository : IMessageRepository
 
     public async Task AddMessage(Message message)
     {
+        var contextSender = Context.Users.FirstOrDefault(u => u.Id == message.Sender.Id);
+        
+        if (contextSender is not null)
+        {
+            message.Sender = contextSender;
+        }
+        
+        var receivers = message.Receivers.Select(receiver => Context.Users.FirstOrDefault(u => u.Id == receiver.Id)).OfType<User>().ToList();
+
+        message.Receivers = receivers;
+        
         await Context.Messages.AddAsync(message);
         await Context.SaveChangesAsync();
     }
 
-    public Task DeleteMessage(Message message)
+    public async Task DeleteMessage(Guid id)
     {
-        throw new NotImplementedException();
+        var message = await Context.Messages.FirstOrDefaultAsync(m => m.Id == id) ??
+                      throw new ArgumentException("Message not found");
+        Context.Messages.Remove(message);
+        await Context.SaveChangesAsync();
     }
 
     public Task UpdateMessage(Message message)

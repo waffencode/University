@@ -10,7 +10,7 @@ public class Message
 
     public DateTime Date { get; set; } = DateTime.Now;
 
-    public bool IsImportant { get; set; } = false;
+    public bool IsImportant { get; set; }
     
     public required User Sender { get; set; }
 

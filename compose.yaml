@@ -25,4 +25,5 @@
       - "5432:5432"
     volumes:
         - ~/.aspnet/https:/https:ro
+    restart: always
     
