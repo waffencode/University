@@ -10,9 +10,15 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("default", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .SetIsOriginAllowed(origin => new Uri(origin).IsLoopback);
+        policy.WithOrigins("http://localhost:5432")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -23,14 +29,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
-// builder.Services.AddDbContext<RegistrationRequestContext>(options =>
-//     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
-
 builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
 
 builder.Services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRegistrationRequestRepository, RegistrationRequestRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
@@ -53,6 +57,6 @@ AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
-app.UseCors("default");
 app.MapControllers();
+app.UseCors("default");
 app.Run();

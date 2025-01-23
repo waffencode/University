@@ -88,6 +88,7 @@ public class UserRepository : IUserRepository
     /// <param name="id">Guid of user.</param>
     /// <param name="user">An instance of <see cref="User"/>.</param>
     /// <exception cref="InvalidOperationException">Thrown if user not found.</exception>
+    // TODO: Fix error.
     public async Task UpdateUserPartially(Guid id, User user)
     {
         var currentUser = await GetUserById(id);
@@ -109,9 +110,9 @@ public class UserRepository : IUserRepository
     /// <exception cref="InvalidOperationException">Thrown when no User with the given email is found.</exception>
     public async Task<User> GetUserByEmail(string email)
     {
-        var user = await Context.Users.FirstOrDefaultAsync(x => x.Email == email);
+        var user = await Context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
         
-        if (user == null)
+        if (user is null)
         {
             throw new InvalidOperationException("User not found");
         }

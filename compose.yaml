@@ -1,0 +1,29 @@
+﻿services:
+  university.db:
+    container_name: University.Database
+    image: "postgres:latest"
+    environment:
+      - ACCEPT_EULA=y
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    restart: no
+    network_mode: "service:university.api"
+    
+  university.api:
+    container_name: University.API
+    image: university.api
+    build:
+      context: .
+      dockerfile: University.API/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=https://+:7065;
+      - ASPNETCORE_HTTPS_PORT=7065
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - "7065:7065"
+      - "5432:5432"
+    volumes:
+        - ~/.aspnet/https:/https:ro
+    restart: always
+    

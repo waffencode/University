@@ -16,6 +16,8 @@ public class UserContext : DbContext
     
     public DbSet<RegistrationRequest> RegistrationRequests { get; set; }
     
+    public DbSet<Message> Messages { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
@@ -23,6 +25,16 @@ public class UserContext : DbContext
             .WithOne(p => p.User)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<User>()
+            .HasMany<Message>()
+            .WithMany(p => p.Receivers);
+        
+        modelBuilder.Entity<User>()
+            .HasMany<Message>()
+            .WithOne(p => p.Sender);
+        
+        // TODO: Add StudyGroup relation when StudyGroup is implemented.
     }
     
     /// <summary>

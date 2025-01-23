@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using University.Domain;
 using University.Repository;
 using University.Security;
@@ -9,7 +10,7 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
     public async Task<string> Login(string email, string passwordHash)
     {
         var user = await userRepository.GetUserByEmail(email);
-        if (user.PasswordHash != null && user.PasswordHash.Equals(passwordHash))
+        if (user.PasswordHash is not null && !passwordHash.Equals(string.Empty) && user.PasswordHash.Equals(passwordHash))
         {
             return jwtTokenProvider.GenerateJwtToken(user);
         }
@@ -40,6 +41,8 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
     public async Task AuthorizeUser(Guid registrationRequestId)
     {
         var registrationRequest = await registrationRequestRepository.GetRegistrationRequestById(registrationRequestId);
+        
+        Debug.Assert(registrationRequest is not null, "registrationRequest is null");
         
         var user = registrationRequest.User;
         user.Role = registrationRequest.RequestedRole;
