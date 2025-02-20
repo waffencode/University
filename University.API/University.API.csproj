@@ -42,4 +42,19 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Repository\MessageRepository.cs">
+        <DependentUpon>IMessageRepository.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Repository\UserRepository.cs">
+        <DependentUpon>IUserRepository.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Repository\RegistrationRequestRepository.cs">
+        <DependentUpon>IRegistrationRequestRepository.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Repository\ClassroomRepository.cs">
+        <DependentUpon>IClassroomRepository.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

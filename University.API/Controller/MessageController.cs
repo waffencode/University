@@ -12,11 +12,13 @@ public class MessageController : ControllerBase
 {
     private readonly MessageRepository _messageRepository;
     private readonly UserRepository _userRepository;
+    private readonly ILogger<UserController> _logger;
     
-    public MessageController(UserContext userContext)
+    public MessageController(UserContext userContext, ILogger<UserController> logger)
     {
         _messageRepository = new MessageRepository(userContext);
         _userRepository = new UserRepository(userContext);
+        _logger = logger;
     }
 
     [HttpPost]
@@ -26,6 +28,7 @@ public class MessageController : ControllerBase
     public async Task<IActionResult> SendMessage(Message message)
     {
         await _messageRepository.AddMessage(message);
+        _logger.LogInformation("Message <{id}> has been sent", message.Id);
         return CreatedAtAction(nameof(SendMessage), message);
     }
     
@@ -46,7 +49,14 @@ public class MessageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeleteMessage(Guid id)
     {
-        await _messageRepository.DeleteMessage(id);
-        return Ok();
+        try
+        {
+            await _messageRepository.DeleteMessage(id);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }

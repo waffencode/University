@@ -13,10 +13,9 @@ public class UserContext : DbContext
     /// DbSet for <see cref="User"/>.
     /// </summary>
     public DbSet<User> Users { get; init; }
-    
-    public DbSet<RegistrationRequest> RegistrationRequests { get; set; }
-    
-    public DbSet<Message> Messages { get; set; }
+    public DbSet<RegistrationRequest> RegistrationRequests { get; init; }
+    public DbSet<Message> Messages { get; init; }
+    public DbSet<Classroom> Classrooms { get; init; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
