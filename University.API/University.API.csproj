@@ -55,6 +55,12 @@
       <Compile Update="Repository\ClassroomRepository.cs">
         <DependentUpon>IClassroomRepository.cs</DependentUpon>
       </Compile>
+      <Compile Update="Service\UserService.cs">
+        <DependentUpon>IUserService.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Security\JwtTokenProvider.cs">
+        <DependentUpon>IJwtTokenProvider.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

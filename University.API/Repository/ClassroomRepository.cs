@@ -16,23 +16,25 @@ public class ClassroomRepository : IClassroomRepository
         await Context.SaveChangesAsync();
     }
 
-    public async Task<Classroom> GetByIdAsync(Guid id)
+    public async Task<Classroom?> GetByIdAsync(Guid id)
     {
         return await Context.Classrooms.FirstOrDefaultAsync(c => c.Id == id);
     }
 
     public async Task<List<Classroom>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await Context.Classrooms.ToListAsync();
     }
 
     public async Task DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
+        Context.Classrooms.Remove(await GetByIdAsync(id));
+        await Context.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(Classroom classroom)
     {
-        throw new NotImplementedException();
+        Context.Classrooms.Update(classroom);
+        await Context.SaveChangesAsync();
     }
 }
