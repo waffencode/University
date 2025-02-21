@@ -221,11 +221,10 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    // TODO: Replace arguments with single User parameter.
-    public async Task<ActionResult> Register(string email, string passwordHash)
+    public async Task<ActionResult> Register(User user)
     {
-        await _userService.Register(email, passwordHash);
-        _logger.LogInformation("User <{email}> successfully registered.", email);
+        await _userService.Register(user);
+        _logger.LogInformation("User <{email}> successfully registered.", user.Email);
         return Ok();
     }
     
