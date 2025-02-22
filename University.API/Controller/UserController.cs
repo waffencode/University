@@ -228,21 +228,14 @@ public class UserController : ControllerBase
         return Ok();
     }
     
-    [HttpPost("authorize")]
+    [HttpGet("authorize/{requestId:guid}")]
     [Authorize(Policy = "RequireAdminRole")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> AuthorizeUser(string requestStringId)
+    public async Task<ActionResult> AuthorizeUser(Guid requestId)
     {
         try
         {
-            var requestId = Guid.Parse(requestStringId);
-        
-            if (requestId.Equals( Guid.Empty))
-            {
-                return BadRequest("requestStringId should not contain null GUID");
-            }
-        
             await _userService.AuthorizeUser(requestId);
             return Ok();
         }
