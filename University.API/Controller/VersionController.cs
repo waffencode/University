@@ -11,6 +11,7 @@ namespace University.Controller;
 [ApiController]
 public class VersionController : ControllerBase
 {
+    
     /// <summary>
     /// Method to get the version of the application.
     /// </summary>

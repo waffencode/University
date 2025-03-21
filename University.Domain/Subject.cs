@@ -1,8 +1,8 @@
 namespace University.Domain;
 
-public class Discipline
+public class Subject
 {
-    public Guid Id { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     public string Name { get; set; } = string.Empty;
 }

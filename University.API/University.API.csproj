@@ -14,18 +14,18 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.3">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.2" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -60,6 +60,24 @@
       </Compile>
       <Compile Update="Security\JwtTokenProvider.cs">
         <DependentUpon>IJwtTokenProvider.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Repository\StudyGroupRepository.cs">
+        <DependentUpon>IStudyGroupRepository.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Repository\ClassTimeSlotRepository.cs">
+        <DependentUpon>IClassTimeSlotRepository.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Repository\SubjectWorkProgramRepository.cs">
+        <DependentUpon>ISubjectWorkProgramRepository.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Repository\BaseRepositoryImpl.cs">
+        <DependentUpon>IBaseRepository.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Repository\SubjectRepository.cs">
+        <DependentUpon>ISubjectRepository.cs</DependentUpon>
+      </Compile>
+      <Compile Update="Repository\ScheduleClassRepository.cs">
+        <DependentUpon>IScheduleClassRepository.cs</DependentUpon>
       </Compile>
     </ItemGroup>
 

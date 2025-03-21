@@ -13,9 +13,22 @@ public class UserContext : DbContext
     /// DbSet for <see cref="User"/>.
     /// </summary>
     public DbSet<User> Users { get; init; }
+    
     public DbSet<RegistrationRequest> RegistrationRequests { get; init; }
+    
     public DbSet<Message> Messages { get; init; }
+    
     public DbSet<Classroom> Classrooms { get; init; }
+    
+    public DbSet<StudyGroup> StudyGroups { get; init; }
+    
+    public DbSet<ClassTimeSlot> ClassTimeSlots { get; init; }
+    
+    public DbSet<ScheduleClass> ScheduleClasses { get; init; }
+    
+    public DbSet<Subject> Subjects { get; init; }
+    
+    public DbSet<SubjectWorkProgram> SubjectWorkPrograms { get; init; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,8 +45,10 @@ public class UserContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany<Message>()
             .WithOne(p => p.Sender);
-        
-        // TODO: Add StudyGroup relation when StudyGroup is implemented.
+
+        modelBuilder.Entity<SubjectWorkProgram>()
+            .OwnsMany(p => p.Classes)
+            .WithOwner(p => p.WorkProgram);
     }
     
     /// <summary>
