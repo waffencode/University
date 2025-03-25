@@ -7,4 +7,6 @@ public class StudyGroup
     public string Name { get; set; } = string.Empty;
 
     public List<User> Students { get; init; } = [];
+
+    public FieldOfStudy FieldOfStudy = new();
 }

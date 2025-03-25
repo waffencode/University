@@ -5,7 +5,7 @@ using University.Repository;
 
 namespace University.Controller;
 
-public class ScheduleClassController: CRUDBaseController<ScheduleClass>
+public class ScheduleClassController: CrudBaseController<ScheduleClass>
 {
     public ScheduleClassController(UserContext context, ILogger<ClassTimeSlotController> logger) : base(context, logger)
     {
@@ -14,6 +14,7 @@ public class ScheduleClassController: CRUDBaseController<ScheduleClass>
 
     public override async Task<ActionResult<ScheduleClass>> Update(Guid id, ScheduleClass entity)
     {
-        return Ok(_repository.UpdateAsync(entity));
+        await _repository.UpdateAsync(entity);
+        return Ok();
     }
 }
