@@ -30,6 +30,8 @@ public class UserContext : DbContext
     
     public DbSet<SubjectWorkProgram> SubjectWorkPrograms { get; init; }
     
+    public DbSet<FieldOfStudy> FieldsOfStudy { get; init; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
@@ -45,10 +47,13 @@ public class UserContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany<Message>()
             .WithOne(p => p.Sender);
-
+        
         modelBuilder.Entity<SubjectWorkProgram>()
             .OwnsMany(p => p.Classes)
             .WithOwner(p => p.WorkProgram);
+
+        modelBuilder.Entity<StudyGroup>()
+            .HasOne(p => p.FieldOfStudy);
     }
     
     /// <summary>

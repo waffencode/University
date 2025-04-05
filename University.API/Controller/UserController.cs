@@ -153,13 +153,28 @@ public class UserController : ControllerBase
     [HttpDelete("{id:guid}")]
     [Authorize(Policy = "RequireAdminRole")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    // TODO: Prohibit self deletion.
     public async Task<ActionResult> DeleteUser(Guid id)
     {
         try
         {
+            var issuer = await _userRepository.GetUserById(GetRequestAuthorUserId()) ?? throw new InvalidOperationException("Issuer not found.");
+            var userToDelete = await _userRepository.GetUserById(id) ?? throw new InvalidOperationException();
+
+            if (userToDelete.Equals(issuer))
+            {
+                return BadRequest();
+            }
+            
             await _userRepository.DeleteUser(id);
+            
+            _logger.LogInformation("User {deleted_id} <{email}> was deleted. Issued by {issuer_id} <{issuer_email}>", 
+                userToDelete.Id, 
+                userToDelete.Email, 
+                issuer.Id,
+                issuer.Email);
+            
             return Ok();
         }
         catch (InvalidOperationException ex)
@@ -177,8 +192,9 @@ public class UserController : ControllerBase
         {
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = false,
+                HttpOnly = true,
                 Secure = true,
+                SameSite = SameSiteMode.None,
                 IsEssential = true,
                 Expires = DateTime.Now.AddHours(_options.ExpireHours)
             };
@@ -213,7 +229,8 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult Logout()
     {
-        _logger.LogInformation("User <{email}> logged out.", User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst("userId")?.Value);
+        _logger.LogInformation("User <{email}> logged out.", 
+            User.FindFirst(ClaimTypes.Email)?.Value ?? User.FindFirst("userId")?.Value);
         HttpContext.Response.Cookies.Delete("token");
         return Ok();
     }
@@ -224,7 +241,9 @@ public class UserController : ControllerBase
     public async Task<ActionResult> Register(User user)
     {
         await _userService.Register(user);
-        _logger.LogInformation("User <{email}> successfully registered.", user.Email);
+        _logger.LogInformation("User <{email}> successfully registered. Created registration request {requestId}.", 
+            user.Email,
+            (await _userService.GetUserPendingRegistrationRequestAsync(user.Id)).Id);
         return Ok();
     }
     
@@ -263,16 +282,23 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<User>> Whoami()
     {
+        var id = GetRequestAuthorUserId();
+        var user = (await _userRepository.GetUserById(id));
+        
+        return Ok(user);
+    }
+
+    [NonAction]
+    private Guid GetRequestAuthorUserId()
+    {
         var rawId = User.FindFirst("userId")?.Value;
 
         if (string.IsNullOrEmpty(rawId))
         {
-            return NotFound("ID not found");
+            throw new InvalidOperationException("Failed to parse GUID of the request issuer.");
         }
 
         var id = Guid.Parse(rawId);
-        var user = (await _userRepository.GetUserById(id));
-        
-        return Ok(user);
+        return id;
     }
 }

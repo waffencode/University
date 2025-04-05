@@ -9,4 +9,6 @@ public interface IUserService
     Task Register(User user);
     
     public Task AuthorizeUser(Guid registrationRequestId);
+    
+    public Task<RegistrationRequest> GetUserPendingRegistrationRequestAsync(Guid userId);
 }

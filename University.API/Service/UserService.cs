@@ -43,4 +43,10 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
         registrationRequest.Status = RegistrationRequestStatus.Accepted;
         await registrationRequestRepository.UpdateRegistrationRequest(registrationRequest.Id, registrationRequest);
     }
+
+    public async Task<RegistrationRequest> GetUserPendingRegistrationRequestAsync(Guid userId)
+    {
+        return (await registrationRequestRepository.GetPendingRegistrationRequests())
+            .First(r => r.User.Id.Equals(userId));
+    }
 }
