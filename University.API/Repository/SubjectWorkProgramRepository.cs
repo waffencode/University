@@ -70,7 +70,6 @@ public class SubjectWorkProgramRepository : ISubjectWorkProgramRepository
                 existingEntity.Classes.Add(newClass);
             }
             
-            // Context.Entry(existingEntity).CurrentValues.SetValues(entity);
             Context.Update(existingEntity);
             await Context.SaveChangesAsync();
         }

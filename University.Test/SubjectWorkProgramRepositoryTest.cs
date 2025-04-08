@@ -12,7 +12,6 @@ public class SubjectWorkProgramRepositoryTest
 
     public SubjectWorkProgramRepositoryTest()
     {
-        // Создаем InMemory базу данных для тестов
         _dbContextOptions = new DbContextOptionsBuilder<UserContext>()
             .UseInMemoryDatabase(databaseName: "UniversityTestDb")
             .Options;
@@ -26,10 +25,8 @@ public class SubjectWorkProgramRepositoryTest
         // Arrange
         using (var context = new UserContext(_dbContextOptions))
         {
-            // Очищаем базу данных перед тестом
             context.Database.EnsureDeleted();
-            
-            // Создаем и добавляем тестовый Subject
+
             var subject = new Subject { Id = id, Name = "Test Subject" };
             context.Subjects.Add(subject);
             await context.SaveChangesAsync();
@@ -42,7 +39,6 @@ public class SubjectWorkProgramRepositoryTest
             
             var newSubject = new Subject { Id = id, Name = "Test Subject" };
             
-            // Создаем тестовую рабочую программу с классом
             workProgram = new SubjectWorkProgram 
             { 
                 Subject = newSubject,
@@ -64,7 +60,6 @@ public class SubjectWorkProgramRepositoryTest
         // Assert
         using (var context = new UserContext(_dbContextOptions))
         {
-            // Проверяем, что рабочая программа добавилась
             var savedWorkProgram = await context.SubjectWorkPrograms
                 .Include(wp => wp.Subject)
                 .Include(wp => wp.Classes)
