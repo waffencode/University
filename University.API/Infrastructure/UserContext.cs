@@ -47,10 +47,9 @@ public class UserContext : DbContext
         modelBuilder.Entity<User>()
             .HasMany<Message>()
             .WithOne(p => p.Sender);
-        
+
         modelBuilder.Entity<SubjectWorkProgram>()
-            .OwnsMany(p => p.Classes)
-            .WithOwner(p => p.WorkProgram);
+            .OwnsMany(p => p.Classes);
 
         modelBuilder.Entity<StudyGroup>()
             .HasOne(p => p.FieldOfStudy);

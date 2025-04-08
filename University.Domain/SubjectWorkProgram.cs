@@ -9,8 +9,6 @@ public class PlannedClass
     public int Hours { get; set; }
     
     public ClassType ClassType { get; set;}
-    
-    public required SubjectWorkProgram WorkProgram { get; set; }
 }
 
 public class SubjectWorkProgram
