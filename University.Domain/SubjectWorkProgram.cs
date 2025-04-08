@@ -15,7 +15,7 @@ public class SubjectWorkProgram
 {
     public Guid Id { get; init; } = Guid.NewGuid();
     
-    public required Subject Subject { get; init; }
+    public required Subject Subject { get; set; }
 
     public List<PlannedClass> Classes { get; init; } = [];
 }

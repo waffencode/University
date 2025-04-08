@@ -23,14 +23,16 @@ public class SubjectWorkProgramController : ControllerBase
     [Authorize]
     public async Task<ActionResult> Get(Guid id)
     {
-        return Ok(await _repository.GetByIdAsync(id));
+        var result = await _repository.GetByIdAsync(id);
+        return Ok(result);
     }
     
     [HttpGet]
     [Authorize]
     public async Task<ActionResult> GetAll()
     {
-        return Ok(await _repository.GetAllAsync());
+        var result = await _repository.GetAllAsync();
+        return Ok(result);
     }
 
     [HttpPost]
@@ -38,7 +40,7 @@ public class SubjectWorkProgramController : ControllerBase
     public async Task<ActionResult<SubjectWorkProgram>> Post(SubjectWorkProgram program)
     {
         await _repository.AddAsync(program);
-        var createdProgram = _repository.GetByIdAsync(program.Id);
+        var createdProgram = await _repository.GetByIdAsync(program.Id);
         return CreatedAtAction(nameof(Get), routeValues: new { id = program.Id }, createdProgram);
     }
 

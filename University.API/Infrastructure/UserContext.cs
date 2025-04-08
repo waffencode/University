@@ -51,6 +51,9 @@ public class UserContext : DbContext
         modelBuilder.Entity<SubjectWorkProgram>()
             .OwnsMany(p => p.Classes);
 
+        modelBuilder.Entity<SubjectWorkProgram>()
+            .HasOne(p => p.Subject);
+        
         modelBuilder.Entity<StudyGroup>()
             .HasOne(p => p.FieldOfStudy);
     }

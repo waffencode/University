@@ -12,6 +12,16 @@ public class SubjectWorkProgramRepository : ISubjectWorkProgramRepository
     
     public async Task AddAsync(SubjectWorkProgram entity)
     {
+        var existingSubject = await Context.Subjects
+            .FirstOrDefaultAsync(x => x.Id == entity.Subject.Id);
+    
+        if (existingSubject == null)
+        {
+            throw new Exception("Subject is not in database.");
+        }
+        
+        entity.Subject = existingSubject;
+    
         await Context.SubjectWorkPrograms.AddAsync(entity);
         await Context.SaveChangesAsync();
     }
@@ -40,6 +50,29 @@ public class SubjectWorkProgramRepository : ISubjectWorkProgramRepository
 
     public async Task UpdateAsync(SubjectWorkProgram entity)
     {
-        throw new NotImplementedException();
+        var existingEntity = await GetByIdAsync(entity.Id);
+
+        if (existingEntity is not null)
+        {
+            var existingSubject = await Context.Subjects
+                .FirstOrDefaultAsync(x => x.Id == entity.Subject.Id);
+    
+            if (existingSubject == null)
+            {
+                throw new Exception("Subject is not in database.");
+            }
+            
+            existingEntity.Subject = existingSubject;
+            existingEntity.Classes.Clear();
+            
+            foreach (var newClass in entity.Classes)
+            {
+                existingEntity.Classes.Add(newClass);
+            }
+            
+            // Context.Entry(existingEntity).CurrentValues.SetValues(entity);
+            Context.Update(existingEntity);
+            await Context.SaveChangesAsync();
+        }
     }
 }
