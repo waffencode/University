@@ -13,10 +13,10 @@ public class SubjectWorkProgramController : ControllerBase
     private readonly SubjectWorkProgramRepository _repository;
     private ILogger<SubjectWorkProgramController> _logger;
 
-    public SubjectWorkProgramController(UniversityContext context, ILogger<SubjectWorkProgramController> logger)
+    public SubjectWorkProgramController(UniversityContext context, ILoggerFactory loggerFactory)
     {
-        _repository = new SubjectWorkProgramRepository(context);
-        _logger = logger;
+        _repository = new SubjectWorkProgramRepository(context, loggerFactory.CreateLogger<SubjectWorkProgramRepository>());
+        _logger = loggerFactory.CreateLogger<SubjectWorkProgramController>();
     }
 
     [HttpGet("{id:guid}")]

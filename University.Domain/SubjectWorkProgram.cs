@@ -17,5 +17,5 @@ public class SubjectWorkProgram
     
     public required Subject Subject { get; set; }
 
-    public List<PlannedClass> Classes { get; init; } = [];
+    public List<PlannedClass> Classes { get; set; } = [];
 }

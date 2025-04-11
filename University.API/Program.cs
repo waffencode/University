@@ -36,6 +36,8 @@ builder.Services.AddDbContext<UniversityContext>(options =>
 
 builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
 
+var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder.AddConsole());
+
 builder.Services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRegistrationRequestRepository, RegistrationRequestRepository>();
@@ -46,6 +48,7 @@ builder.Services.AddScoped<IStudyGroupRepository, StudyGroupRepository>();
 builder.Services.AddScoped<IClassTimeSlotRepository, ClassTimeSlotRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 builder.Services.AddScoped<IScheduleClassRepository, ScheduleClassRepository>();
+builder.Services.AddScoped<ISubjectWorkProgramRepository, SubjectWorkProgramRepository>();
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 
