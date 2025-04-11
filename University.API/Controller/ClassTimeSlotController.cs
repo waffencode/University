@@ -13,7 +13,7 @@ public class ClassTimeSlotController : ControllerBase
     private readonly ILogger<ClassTimeSlotController> _logger;
     private readonly ClassTimeSlotRepository _repository;
     
-    public ClassTimeSlotController(UserContext context, ILogger<ClassTimeSlotController> logger)
+    public ClassTimeSlotController(UniversityContext context, ILogger<ClassTimeSlotController> logger)
     {
         _logger = logger;
         _repository = new ClassTimeSlotRepository(context);

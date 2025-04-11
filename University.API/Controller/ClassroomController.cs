@@ -13,10 +13,10 @@ public class ClassroomController : ControllerBase
     private readonly ILogger<UserController> _logger;
     private readonly ClassroomRepository _classroomRepository;
     
-    public ClassroomController(UserContext userContext, ILogger<UserController> logger)
+    public ClassroomController(UniversityContext universityContext, ILogger<UserController> logger)
     {
         _logger = logger;
-        _classroomRepository = new ClassroomRepository(userContext);
+        _classroomRepository = new ClassroomRepository(universityContext);
     }
 
     [HttpGet]

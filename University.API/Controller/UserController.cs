@@ -27,10 +27,10 @@ public class UserController : ControllerBase
     /// <summary>
     /// Default parameterized constructor.
     /// </summary>
-    public UserController(UserContext userContext, IUserService userService, ILogger<UserController> logger, IOptions<JwtOptions> options)
+    public UserController(UniversityContext universityContext, IUserService userService, ILogger<UserController> logger, IOptions<JwtOptions> options)
     {
-        _userRepository = new UserRepository(userContext);
-        _registrationRequestRepository = new RegistrationRequestRepository(userContext);
+        _userRepository = new UserRepository(universityContext);
+        _registrationRequestRepository = new RegistrationRequestRepository(universityContext);
         _userService = userService;
         _logger = logger;
         _options = options.Value;

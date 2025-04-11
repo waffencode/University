@@ -4,7 +4,7 @@ using University.Infrastructure;
 
 namespace University.Repository;
 
-public class ScheduleClassRepository(UserContext context) : BaseRepositoryImpl<ScheduleClass>(context), IScheduleClassRepository
+public class ScheduleClassRepository(UniversityContext context) : BaseRepositoryImpl<ScheduleClass>(context), IScheduleClassRepository
 {
     public override async Task<ScheduleClass?> GetByIdAsync(Guid id)
     {

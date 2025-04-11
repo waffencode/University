@@ -8,11 +8,11 @@ namespace University.Test;
 
 public class SubjectWorkProgramRepositoryTest
 {
-    private readonly DbContextOptions<UserContext> _dbContextOptions;
+    private readonly DbContextOptions<UniversityContext> _dbContextOptions;
 
     public SubjectWorkProgramRepositoryTest()
     {
-        _dbContextOptions = new DbContextOptionsBuilder<UserContext>()
+        _dbContextOptions = new DbContextOptionsBuilder<UniversityContext>()
             .UseInMemoryDatabase(databaseName: "UniversityTestDb")
             .Options;
     }
@@ -23,7 +23,7 @@ public class SubjectWorkProgramRepositoryTest
         Guid id = Guid.NewGuid();
         
         // Arrange
-        using (var context = new UserContext(_dbContextOptions))
+        using (var context = new UniversityContext(_dbContextOptions))
         {
             context.Database.EnsureDeleted();
 
@@ -33,7 +33,7 @@ public class SubjectWorkProgramRepositoryTest
         }
 
         SubjectWorkProgram workProgram;
-        using (var context = new UserContext(_dbContextOptions))
+        using (var context = new UniversityContext(_dbContextOptions))
         {
             var repository = new SubjectWorkProgramRepository(context);
             
@@ -58,7 +58,7 @@ public class SubjectWorkProgramRepositoryTest
         }
 
         // Assert
-        using (var context = new UserContext(_dbContextOptions))
+        using (var context = new UniversityContext(_dbContextOptions))
         {
             var savedWorkProgram = await context.SubjectWorkPrograms
                 .Include(wp => wp.Subject)

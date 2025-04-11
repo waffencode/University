@@ -6,9 +6,9 @@ namespace University.Repository;
 
 public class RegistrationRequestRepository : IRegistrationRequestRepository
 {
-    private UserContext Context { get; }
+    private UniversityContext Context { get; }
     
-    public RegistrationRequestRepository(UserContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
+    public RegistrationRequestRepository(UniversityContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
     
     public async Task CreateRegistrationRequest(RegistrationRequest registrationRequest)
     {

@@ -6,9 +6,9 @@ namespace University.Repository;
 
 public class ClassTimeSlotRepository : IClassTimeSlotRepository
 {
-    private UserContext Context { get; }
+    private UniversityContext Context { get; }
     
-    public ClassTimeSlotRepository(UserContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
+    public ClassTimeSlotRepository(UniversityContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
     
     public async Task AddAsync(ClassTimeSlot entity)
     {

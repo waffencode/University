@@ -6,9 +6,9 @@ namespace University.Repository;
 
 public class SubjectWorkProgramRepository : ISubjectWorkProgramRepository
 {
-    private UserContext Context { get; }
+    private UniversityContext Context { get; }
     
-    public SubjectWorkProgramRepository(UserContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
+    public SubjectWorkProgramRepository(UniversityContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
     
     public async Task AddAsync(SubjectWorkProgram entity)
     {

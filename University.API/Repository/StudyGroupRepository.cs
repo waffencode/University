@@ -6,9 +6,9 @@ namespace University.Repository;
 
 public class StudyGroupRepository : IStudyGroupRepository
 {
-    private UserContext Context { get; }
+    private UniversityContext Context { get; }
 
-    public StudyGroupRepository(UserContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
+    public StudyGroupRepository(UniversityContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
     
     public async Task AddAsync(StudyGroup entity)
     {

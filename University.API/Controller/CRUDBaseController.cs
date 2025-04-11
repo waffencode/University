@@ -12,7 +12,7 @@ public abstract class CrudBaseController<T> : ControllerBase where T : class
     private readonly ILogger _logger;
     protected IBaseRepository<T> _repository;
     
-    protected CrudBaseController(UserContext context, ILogger logger)
+    protected CrudBaseController(UniversityContext context, ILogger logger)
     {
         _logger = logger;
     }

@@ -9,10 +9,10 @@ namespace University.Repository;
 /// </summary>
 /// <typeparam name="T">The entity type</typeparam>
 /// <author>waffencode@gmail.com</author>
-public abstract class BaseRepositoryImpl<T>(UserContext context) : IBaseRepository<T>
+public abstract class BaseRepositoryImpl<T>(UniversityContext context) : IBaseRepository<T>
     where T : class
 {
-    protected UserContext Context { get; } = context;
+    protected UniversityContext Context { get; } = context;
     protected DbSet<T> Set { get; } = context.Set<T>();
 
     public async Task AddAsync(T entity)

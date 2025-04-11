@@ -11,16 +11,16 @@ namespace University.Repository;
 public class UserRepository : IUserRepository
 {
     /// <summary>
-    /// An instance of <see cref="UserContext"/>.
+    /// An instance of <see cref="UniversityContext"/>.
     /// </summary>
-    private UserContext Context { get; }
+    private UniversityContext Context { get; }
 
     /// <summary>
     /// Default parameterized constructor. Parameter should not be null.
     /// </summary>
-    /// <param name="context">An instance of <see cref="UserContext"/>.</param>
+    /// <param name="context">An instance of <see cref="UniversityContext"/>.</param>
     /// <exception cref="ArgumentNullException">Thrown if parameter is null.</exception>
-    public UserRepository(UserContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
+    public UserRepository(UniversityContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
     
     /// <summary>
     /// Async method that adds user to the database.

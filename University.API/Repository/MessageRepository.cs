@@ -6,9 +6,9 @@ namespace University.Repository;
 
 public class MessageRepository : IMessageRepository
 {
-    private UserContext Context { get; }
+    private UniversityContext Context { get; }
     
-    public MessageRepository(UserContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
+    public MessageRepository(UniversityContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
 
     public async Task<List<Message>> GetMessagesByReceiver(User user)
     {

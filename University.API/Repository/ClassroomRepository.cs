@@ -6,9 +6,9 @@ namespace University.Repository;
 
 public class ClassroomRepository : IClassroomRepository
 {
-    private UserContext Context { get; }
+    private UniversityContext Context { get; }
     
-    public ClassroomRepository(UserContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
+    public ClassroomRepository(UniversityContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
     
     public async Task AddAsync(Classroom classroom)
     {

@@ -13,7 +13,7 @@ public class SubjectController : ControllerBase
     private SubjectRepository Repository { get; }
     private readonly ILogger<SubjectController> _logger;
 
-    public SubjectController(UserContext context, ILogger<SubjectController> logger)
+    public SubjectController(UniversityContext context, ILogger<SubjectController> logger)
     {
         Repository = new SubjectRepository(context);
         _logger = logger;

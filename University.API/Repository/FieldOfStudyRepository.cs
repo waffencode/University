@@ -4,7 +4,7 @@ using University.Infrastructure;
 
 namespace University.Repository;
 
-public class FieldOfStudyRepository(UserContext context) : BaseRepositoryImpl<FieldOfStudy>(context), IFieldOfStudyRepository
+public class FieldOfStudyRepository(UniversityContext context) : BaseRepositoryImpl<FieldOfStudy>(context), IFieldOfStudyRepository
 {
     public override async Task<FieldOfStudy?> GetByIdAsync(Guid id)
     {

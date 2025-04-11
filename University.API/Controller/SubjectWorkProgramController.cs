@@ -13,7 +13,7 @@ public class SubjectWorkProgramController : ControllerBase
     private readonly SubjectWorkProgramRepository _repository;
     private ILogger<SubjectWorkProgramController> _logger;
 
-    public SubjectWorkProgramController(UserContext context, ILogger<SubjectWorkProgramController> logger)
+    public SubjectWorkProgramController(UniversityContext context, ILogger<SubjectWorkProgramController> logger)
     {
         _repository = new SubjectWorkProgramRepository(context);
         _logger = logger;

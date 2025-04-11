@@ -12,7 +12,7 @@ public class StudyGroupController : ControllerBase
     private readonly ILogger<StudyGroupController> _logger;
     private readonly StudyGroupRepository _studyGroupRepository;
 
-    public StudyGroupController(UserContext context, ILogger<StudyGroupController> logger)
+    public StudyGroupController(UniversityContext context, ILogger<StudyGroupController> logger)
     {
         _logger = logger;
         _studyGroupRepository = new StudyGroupRepository(context);

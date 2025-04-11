@@ -31,7 +31,7 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename), true);
 });
 
-builder.Services.AddDbContext<UserContext>(options =>
+builder.Services.AddDbContext<UniversityContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
 builder.Services.Configure<JwtTokenProvider>(builder.Configuration);

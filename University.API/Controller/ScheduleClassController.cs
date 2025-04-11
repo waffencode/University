@@ -7,7 +7,7 @@ namespace University.Controller;
 
 public class ScheduleClassController: CrudBaseController<ScheduleClass>
 {
-    public ScheduleClassController(UserContext context, ILogger<ClassTimeSlotController> logger) : base(context, logger)
+    public ScheduleClassController(UniversityContext context, ILogger<ClassTimeSlotController> logger) : base(context, logger)
     {
         _repository = new ScheduleClassRepository(context);
     }

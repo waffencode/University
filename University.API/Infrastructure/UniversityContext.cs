@@ -7,7 +7,7 @@ namespace University.Infrastructure;
 /// User database context.
 /// </summary>
 /// <author>waffencode@gmail.com</author>
-public class UserContext : DbContext
+public class UniversityContext : DbContext
 {
     /// <summary>
     /// DbSet for <see cref="User"/>.
@@ -62,5 +62,5 @@ public class UserContext : DbContext
     /// Parameterized constructor.
     /// </summary>
     /// <param name="options">DbContextOptions for DbContext.</param>
-    public UserContext(DbContextOptions<UserContext> options) : base(options) { }
+    public UniversityContext(DbContextOptions<UniversityContext> options) : base(options) { }
 }

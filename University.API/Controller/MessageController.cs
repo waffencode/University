@@ -14,10 +14,10 @@ public class MessageController : ControllerBase
     private readonly UserRepository _userRepository;
     private readonly ILogger<UserController> _logger;
     
-    public MessageController(UserContext userContext, ILogger<UserController> logger)
+    public MessageController(UniversityContext universityContext, ILogger<UserController> logger)
     {
-        _messageRepository = new MessageRepository(userContext);
-        _userRepository = new UserRepository(userContext);
+        _messageRepository = new MessageRepository(universityContext);
+        _userRepository = new UserRepository(universityContext);
         _logger = logger;
     }
 
