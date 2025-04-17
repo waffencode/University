@@ -56,6 +56,9 @@ public class UniversityContext : DbContext
         
         modelBuilder.Entity<StudyGroup>()
             .HasOne(p => p.FieldOfStudy);
+
+        modelBuilder.Entity<ScheduleClass>()
+            .HasOne(p => p.SubjectWorkProgram);
     }
     
     /// <summary>
