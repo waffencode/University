@@ -11,8 +11,4 @@
       <DocumentationFile>bin\Debug\University.Domain.xml</DocumentationFile>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="DTO\" />
-    </ItemGroup>
-
 </Project>
