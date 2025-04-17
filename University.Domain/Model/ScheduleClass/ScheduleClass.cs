@@ -2,7 +2,6 @@ namespace University.Domain;
 
 public enum ClassType
 {
-    Unknown,
     Lecture,
     Lab,
     Seminar,
@@ -23,9 +22,9 @@ public class ScheduleClass
     
     public required Classroom Classroom { get; set; }
     
-    public required Subject Subject { get; set; }
+    public required SubjectWorkProgram SubjectWorkProgram { get; set; }
 
-    public ClassType ClassType { get; set; } = ClassType.Unknown;
+    public ClassType ClassType { get; set; } = ClassType.Lecture;
 
     public required List<StudyGroup> Groups { get; set; } = [];
 }
