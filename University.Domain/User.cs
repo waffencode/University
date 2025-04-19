@@ -36,6 +36,8 @@ public class User
     public UserRole Role { get; set; } = UserRole.Unauthorized;
     
     public string? FullName { get; set; }
+
+    public string AvatarUri { get; set; } = string.Empty;
     
     /// <summary>
     /// Default constructor.
@@ -50,7 +52,7 @@ public class User
     /// <param name="email">User's email address.</param>
     /// <param name="passwordHash">User's hashed password.</param>
     /// <param name="role">User's role.</param>
-    public User(Guid id, string? username, string email, string? passwordHash, UserRole role, string? fullName)
+    public User(Guid id, string? username, string email, string? passwordHash, UserRole role, string? fullName, string? avatarUri)
     {
         Id = id;
         Username = username;
@@ -58,6 +60,7 @@ public class User
         PasswordHash = passwordHash;
         Role = role;
         FullName = fullName;
+        AvatarUri = avatarUri;
     }
 
     /// <summary>
@@ -78,7 +81,8 @@ public class User
             Email = target.Email,
             PasswordHash = target.PasswordHash ?? PasswordHash,
             Role = target.Role,
-            FullName = target.FullName ?? FullName
+            FullName = target.FullName ?? FullName,
+            AvatarUri = target.AvatarUri
         };
 
         return user;

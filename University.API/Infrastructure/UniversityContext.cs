@@ -57,8 +57,19 @@ public class UniversityContext : DbContext
         modelBuilder.Entity<StudyGroup>()
             .HasOne(p => p.FieldOfStudy);
 
+        modelBuilder.Entity<StudyGroup>()
+            .HasMany(p => p.Students);
+        
         modelBuilder.Entity<ScheduleClass>()
             .HasOne(p => p.SubjectWorkProgram);
+
+        modelBuilder.Entity<StudyGroup>()
+            .HasMany<ScheduleClass>()
+            .WithMany(p => p.Groups);
+        
+        modelBuilder.Entity<StudyGroup>()
+            .HasMany<Message>()
+            .WithMany(p => p.ReceiversStudyGroups);
     }
     
     /// <summary>

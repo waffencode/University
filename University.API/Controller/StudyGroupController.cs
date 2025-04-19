@@ -1,56 +1,48 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using University.Domain;
-using University.Infrastructure;
 using University.Repository;
 
 namespace University.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class StudyGroupController : ControllerBase
+public class StudyGroupController(IStudyGroupRepository repository, ILogger<StudyGroupController> logger) : ControllerBase
 {
-    private readonly ILogger<StudyGroupController> _logger;
-    private readonly StudyGroupRepository _studyGroupRepository;
-
-    public StudyGroupController(UniversityContext context, ILogger<StudyGroupController> logger)
-    {
-        _logger = logger;
-        _studyGroupRepository = new StudyGroupRepository(context);
-    }
-
     [HttpGet]
-    public async Task<ActionResult<List<StudyGroup>>> Get()
+    public async Task<ActionResult<IEnumerable<StudyGroupDto>>> Get()
     {
-        var studyGroups = await _studyGroupRepository.GetAllAsync();
+        var studyGroups = await repository.GetAllAsync();
         return Ok(studyGroups);
     }
 
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<StudyGroup>> Get(Guid id)
+    public async Task<ActionResult<StudyGroupDto>> Get(Guid id)
     {
-        return Ok(await _studyGroupRepository.GetByIdAsync(id));
+        return Ok(await repository.GetByIdAsync(id));
     }
 
+    [Authorize]
     [HttpPost]
-    public async Task<ActionResult<StudyGroup>> Post(StudyGroup studyGroup)
+    public async Task<ActionResult<StudyGroup>> CreateStudyGroup(StudyGroupDto studyGroup, CancellationToken cancellationToken)
     {
-        await _studyGroupRepository.AddAsync(studyGroup);
+        await repository.AddAsync(studyGroup, cancellationToken);
         return CreatedAtAction(nameof(Get), new { id = studyGroup.Id }, studyGroup);
     }
 
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult<StudyGroup>> Put(Guid id, StudyGroup studyGroup)
+    public async Task<ActionResult<StudyGroup>> Put(Guid id, StudyGroupDto studyGroup)
     {
         if (id != studyGroup.Id) return BadRequest();
 
-        await _studyGroupRepository.UpdateAsync(studyGroup);
+        await repository.UpdateAsync(studyGroup);
         return Ok(studyGroup);
     }
 
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult<StudyGroup>> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
-        await _studyGroupRepository.DeleteAsync(id);
+        await repository.DeleteAsync(id);
         return Ok();
     }
 }

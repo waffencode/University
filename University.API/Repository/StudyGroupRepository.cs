@@ -4,37 +4,69 @@ using University.Infrastructure;
 
 namespace University.Repository;
 
-public class StudyGroupRepository : IStudyGroupRepository
+public class StudyGroupRepository(UniversityContext context) : IStudyGroupRepository
 {
-    private UniversityContext Context { get; }
-
-    public StudyGroupRepository(UniversityContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
-    
-    public async Task AddAsync(StudyGroup entity)
+    public async Task AddAsync(StudyGroupDto studyGroupDto, CancellationToken cancellationToken = default)
     {
-        await Context.StudyGroups.AddAsync(entity);
-        await Context.SaveChangesAsync();
+        var fieldOfStudy = await context.FieldsOfStudy.FindAsync([studyGroupDto.FieldOfStudyId], cancellationToken);
+        if (fieldOfStudy is null)
+        {
+            return;
+        }
+
+        var existingStudentsList = await context.Users.Where(p => studyGroupDto.StudentsIdList.Contains(p.Id))
+            .ToListAsync(cancellationToken);
+        if (existingStudentsList.Count != studyGroupDto.StudentsIdList.Count())
+        {
+            return;
+        }
+        
+        var entity = new StudyGroup
+        {
+            Id = studyGroupDto.Id,
+            Name = studyGroupDto.Name,
+            FieldOfStudy = fieldOfStudy,
+            Students = existingStudentsList
+        };
+        
+        await context.StudyGroups.AddAsync(entity, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<StudyGroup?> GetByIdAsync(Guid id)
+    public async Task<StudyGroupDto?> GetByIdAsync(Guid id)
     {
-        return await Context.StudyGroups.FirstOrDefaultAsync(x => x.Id == id);
+        return StudyGroupMapper.StudyGroupToStudyGroupDto(await context.StudyGroups.AsNoTracking()
+            .AsSplitQuery()
+            .Include(p => p.FieldOfStudy)
+            .Include(p => p.Students)
+            .FirstOrDefaultAsync(x => x.Id == id));
     }
 
-    public async Task<List<StudyGroup>> GetAllAsync()
+    public async Task<IEnumerable<StudyGroupDto>> GetAllAsync()
     {
-        return await Context.StudyGroups.ToListAsync();
+        return await context.StudyGroups.AsNoTracking()
+            .AsSplitQuery()
+            .Include(p => p.FieldOfStudy)
+            .Include(p => p.Students)
+            .Select(s => StudyGroupMapper.StudyGroupToStudyGroupDto(s)).ToListAsync();
     }
 
     public async Task DeleteAsync(Guid id)
     {
-        Context.StudyGroups.Remove(await GetByIdAsync(id));
-        await Context.SaveChangesAsync();
+        var entity = await context.StudyGroups.FindAsync(id);
+        if (entity is null)
+        {
+            return;
+        }
+        
+        context.StudyGroups.Remove(entity);
+        await context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(StudyGroup entity)
+    public async Task UpdateAsync(StudyGroupDto entity)
     {
-        Context.StudyGroups.Update(entity);
-        await Context.SaveChangesAsync();
+        throw new NotImplementedException();
+        // context.StudyGroups.Update(entity);
+        // await context.SaveChangesAsync();
     }
 }

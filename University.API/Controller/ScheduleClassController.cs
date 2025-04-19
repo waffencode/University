@@ -45,4 +45,12 @@ public class ScheduleClassController(IScheduleClassRepository repository, ILogge
             return StatusCode(500, exception.Message);
         }
     }
+
+    [Authorize]
+    [HttpGet]
+    [ResponseCache(Duration = 30)]
+    public async Task<IActionResult> GetScheduleClasses(CancellationToken cancellationToken)
+    {
+        return Ok(await repository.GetAllAsync(cancellationToken));
+    }
 }

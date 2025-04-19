@@ -1,7 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using University.Domain;
 using University.Infrastructure;
 using University.Repository;
@@ -224,7 +227,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpGet("logout")]
+    [HttpPost("logout")]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult Logout()
@@ -288,6 +291,37 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
+    [HttpGet("check")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<bool>> CheckCookie()
+    {
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience  = false,
+            ValidateLifetime  = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
+        };
+        
+        var authCookie = HttpContext.Request.Cookies["token"];
+        if (authCookie is null)
+        {
+            return Ok(false);
+        }
+       
+        try
+        {
+            var jwt = await new JwtSecurityTokenHandler().ValidateTokenAsync(authCookie, validationParameters);
+            return Ok(jwt is not null);
+        }
+        catch (SecurityTokenException ex)
+        {
+            return Ok(false);
+        }
+    }
+    
     [NonAction]
     private Guid GetRequestAuthorUserId()
     {
