@@ -12,9 +12,12 @@ public class MessageRepository : IMessageRepository
 
     public async Task<List<Message>> GetMessagesByReceiver(User user)
     {
-        return await Context.Messages.Where(m => m.Receivers.Contains(user))
+        return await Context.Messages.Where(m => m.Receivers.Contains(user) || m.Sender.Equals(user))
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(m => m.Sender)
             .Include(m => m.Receivers)
+            .Include(m => m.ReceiversStudyGroups)
             .ToListAsync();
     }
 
