@@ -1,3 +1,5 @@
+using University.Domain.Model;
+
 namespace University.Domain;
 
 public enum ClassType
@@ -27,4 +29,6 @@ public class ScheduleClass
     public ClassType ClassType { get; set; } = ClassType.Lecture;
 
     public required List<StudyGroup> Groups { get; set; } = [];
+    
+    public ScheduleClassDetails Details { get; set; }
 }

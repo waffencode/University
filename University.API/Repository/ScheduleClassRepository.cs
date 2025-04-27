@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using University.Domain;
+using University.Domain.Model;
 using University.Exceptions;
 using University.Infrastructure;
 
@@ -66,7 +67,8 @@ public class ScheduleClassRepository(UniversityContext context, ILogger<Schedule
             Name = scheduleClassDto.Name,
             SubjectWorkProgram = subjectWorkProgram,
             Teacher = teacher,
-            TimeSlot = timeSlot
+            TimeSlot = timeSlot,
+            Details = new ScheduleClassDetails()
         };
         
         // Store the entity in the app database.
@@ -83,15 +85,18 @@ public class ScheduleClassRepository(UniversityContext context, ILogger<Schedule
         }
     }
 
-    public async Task<ScheduleClassDto?> GetByIdAsync(Guid id)
+    public async Task<ScheduleClassDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var result = await context.ScheduleClasses
+            .AsNoTracking()
+            .AsSplitQuery()
             .Include(c => c.Classroom)
             .Include(c => c.Groups)
             .Include(c => c.SubjectWorkProgram)
             .Include(c => c.Teacher)
             .Include(c => c.TimeSlot)
-            .FirstOrDefaultAsync(c => c.Id.Equals(id));
+            .Include(c => c.Details)
+            .FirstOrDefaultAsync(c => c.Id.Equals(id), cancellationToken);
         return result is not null ? ScheduleClassMapper.ScheduleClassToScheduleClassDto(result) : null;
     }
 
@@ -105,6 +110,7 @@ public class ScheduleClassRepository(UniversityContext context, ILogger<Schedule
             .Include(c => c.SubjectWorkProgram)
             .Include(c => c.Teacher)
             .Include(c => c.TimeSlot)
+            .Include(c => c.Details)
             .Select(sc => ScheduleClassMapper.ScheduleClassToScheduleClassDto(sc))
             .ToListAsync(cancellationToken);
         

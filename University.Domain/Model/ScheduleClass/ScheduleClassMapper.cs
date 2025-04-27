@@ -14,7 +14,8 @@ public class ScheduleClassMapper
             Name = scheduleClass.Name,
             SubjectWorkProgramId = scheduleClass.SubjectWorkProgram.Id,
             TeacherId = scheduleClass.Teacher.Id,
-            TimeSlotId = scheduleClass.TimeSlot.Id
+            TimeSlotId = scheduleClass.TimeSlot.Id,
+            DetailsId = scheduleClass.Details.Id
         };
     }
 }

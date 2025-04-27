@@ -53,4 +53,18 @@ public class ScheduleClassController(IScheduleClassRepository repository, ILogge
     {
         return Ok(await repository.GetAllAsync(cancellationToken));
     }
+    
+    [Authorize]
+    [HttpGet("{id:guid}")]
+    [ResponseCache(Duration = 30)]
+    public async Task<IActionResult> GetScheduleClassById(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await repository.GetByIdAsync(id, cancellationToken);
+        if (result is null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(result);
+    }
 }

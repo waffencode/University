@@ -19,4 +19,6 @@ public class ScheduleClassDto
     public ClassType ClassType { get; set; } = ClassType.Lecture;
 
     public IEnumerable<Guid> GroupsId { get; set; } = [];
+    
+    public Guid DetailsId { get; set; }
 }

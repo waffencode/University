@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using University.Domain;
+using University.Domain.Model;
 
 namespace University.Infrastructure;
 
@@ -70,6 +71,16 @@ public class UniversityContext : DbContext
         modelBuilder.Entity<StudyGroup>()
             .HasMany<Message>()
             .WithMany(p => p.ReceiversStudyGroups);
+
+        modelBuilder.Entity<ScheduleClass>()
+            .OwnsOne<ScheduleClassDetails>(p => p.Details, a =>
+            {
+                a.OwnsMany(p => p.StudentDetailsList);
+            });
+        
+        modelBuilder.Entity<ScheduleClass>()
+            .HasMany<Message>()
+            .WithOne(p => p.RelatedClass);
     }
     
     /// <summary>
