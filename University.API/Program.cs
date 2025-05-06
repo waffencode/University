@@ -34,10 +34,6 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<UniversityContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Database")));
 
-builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
-
-var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder.AddConsole());
-
 builder.Services.AddScoped<IJwtTokenProvider, JwtTokenProvider>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRegistrationRequestRepository, RegistrationRequestRepository>();
@@ -49,7 +45,9 @@ builder.Services.AddScoped<IClassTimeSlotRepository, ClassTimeSlotRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 builder.Services.AddScoped<IScheduleClassRepository, ScheduleClassRepository>();
 builder.Services.AddScoped<ISubjectWorkProgramRepository, SubjectWorkProgramRepository>();
+builder.Services.AddScoped<IScheduleClassService, ScheduleClassService>();
 
+builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
 
 // Custom security policy, defined in Security.ApiSecurityExtensions.

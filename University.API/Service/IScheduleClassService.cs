@@ -1,6 +1,8 @@
+using University.Domain;
+
 namespace University.Service;
 
-public class IScheduleClassService
+public interface IScheduleClassService
 {
-    
+    public Task CreateScheduleClassAsync(ScheduleClassDto scheduleClassDto, CancellationToken cancellationToken);
 }

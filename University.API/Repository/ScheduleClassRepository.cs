@@ -92,10 +92,13 @@ public class ScheduleClassRepository(UniversityContext context, ILogger<Schedule
             .AsSplitQuery()
             .Include(c => c.Classroom)
             .Include(c => c.Groups)
+            .ThenInclude(c => c.Students)
             .Include(c => c.SubjectWorkProgram)
             .Include(c => c.Teacher)
             .Include(c => c.TimeSlot)
             .Include(c => c.Details)
+            .ThenInclude(c => c.StudentDetailsList)
+            .ThenInclude(studentDetails => studentDetails.Student)
             .FirstOrDefaultAsync(c => c.Id.Equals(id), cancellationToken);
         return result is not null ? ScheduleClassMapper.ScheduleClassToScheduleClassDto(result) : null;
     }
@@ -107,10 +110,13 @@ public class ScheduleClassRepository(UniversityContext context, ILogger<Schedule
             .AsSplitQuery()
             .Include(c => c.Classroom)
             .Include(c => c.Groups)
+            .ThenInclude(c => c.Students)
             .Include(c => c.SubjectWorkProgram)
             .Include(c => c.Teacher)
             .Include(c => c.TimeSlot)
             .Include(c => c.Details)
+            .ThenInclude(c => c.StudentDetailsList)
+            .ThenInclude(studentDetails => studentDetails.Student)
             .Select(sc => ScheduleClassMapper.ScheduleClassToScheduleClassDto(sc))
             .ToListAsync(cancellationToken);
         
@@ -122,8 +128,25 @@ public class ScheduleClassRepository(UniversityContext context, ILogger<Schedule
         throw new NotImplementedException();
     }
 
-    public async Task UpdateAsync(ScheduleClassDto entity)
+    public async Task UpdateEntityAsync(ScheduleClass entity, CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        context.Update(entity);
+        await context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<ScheduleClass?> GetAsEntityByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await context.ScheduleClasses
+            .AsSplitQuery()
+            .Include(c => c.Classroom)
+            .Include(c => c.Groups)
+            .ThenInclude(c => c.Students)
+            .Include(c => c.SubjectWorkProgram)
+            .Include(c => c.Teacher)
+            .Include(c => c.TimeSlot)
+            .Include(c => c.Details)
+            .ThenInclude(c => c.StudentDetailsList)
+            .ThenInclude(studentDetails => studentDetails.Student)
+            .FirstOrDefaultAsync(c => c.Id.Equals(id), cancellationToken);
     }
 }

@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using University.Domain;
 using University.Exceptions;
 using University.Repository;
+using University.Service;
 
 namespace University.Controller;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ScheduleClassController(IScheduleClassRepository repository, ILogger<ClassTimeSlotController> logger)
+public class ScheduleClassController(IScheduleClassRepository repository, IScheduleClassService service, ILogger<ScheduleClassController> logger)
     : ControllerBase
 {
     [Authorize(Policy = "RequireManagerRole")]
@@ -27,7 +28,7 @@ public class ScheduleClassController(IScheduleClassRepository repository, ILogge
 
         try
         {
-            await repository.AddAsync(scheduleClassDto, cancellationToken);
+            await service.CreateScheduleClassAsync(scheduleClassDto, cancellationToken);
             return Created();
         }
         catch (OperationCanceledException)

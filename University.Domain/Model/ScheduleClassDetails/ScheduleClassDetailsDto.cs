@@ -8,7 +8,7 @@ public class StudentDetailsDto
     
     public AttendanceType Attendance { get; set; }
     
-    public int Grade { get; set; }
+    public int? Grade { get; set; }
 }
 
 public class ScheduleClassDetailsDto

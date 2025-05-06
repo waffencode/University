@@ -82,6 +82,9 @@
       <Compile Update="Repository\FieldOfStudyRepository.cs">
         <DependentUpon>IFieldOfStudyRepository.cs</DependentUpon>
       </Compile>
+      <Compile Update="Service\ScheduleClassService.cs">
+        <DependentUpon>IScheduleClassService.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

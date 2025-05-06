@@ -20,4 +20,8 @@ public interface IScheduleClassRepository
     public Task<IEnumerable<ScheduleClassDto>> GetAllAsync(CancellationToken cancellationToken = default);
     
     public Task<ScheduleClassDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    
+    public Task UpdateEntityAsync(ScheduleClass entity, CancellationToken cancellationToken = default);
+    
+    public Task<ScheduleClass?> GetAsEntityByIdAsync(Guid id, CancellationToken cancellationToken = default);
 }

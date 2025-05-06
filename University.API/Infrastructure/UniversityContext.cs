@@ -82,7 +82,7 @@ public class UniversityContext : DbContext
             .HasMany<Message>()
             .WithOne(p => p.RelatedClass);
     }
-    
+
     /// <summary>
     /// Parameterized constructor.
     /// </summary>
