@@ -136,7 +136,7 @@ public class ScheduleClassRepository(UniversityContext context, ILogger<Schedule
 
     public async Task<ScheduleClass?> GetAsEntityByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await context.ScheduleClasses
+        var result = await context.ScheduleClasses
             .AsSplitQuery()
             .Include(c => c.Classroom)
             .Include(c => c.Groups)
@@ -148,5 +148,7 @@ public class ScheduleClassRepository(UniversityContext context, ILogger<Schedule
             .ThenInclude(c => c.StudentDetailsList)
             .ThenInclude(studentDetails => studentDetails.Student)
             .FirstOrDefaultAsync(c => c.Id.Equals(id), cancellationToken);
+        
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using University.Domain;
+using University.Domain.Model;
 using University.Exceptions;
 using University.Repository;
 using University.Service;
@@ -67,5 +68,20 @@ public class ScheduleClassController(IScheduleClassRepository repository, ISched
         }
         
         return Ok(result);
+    }
+
+    [Authorize(Policy = "RequireTeacherRole")]
+    [HttpPost("{id:guid}/journal")]
+    public async Task<IActionResult> UpdateJournal(Guid id, [FromBody] ScheduleClassDetailsDto journalDto,
+        CancellationToken cancellationToken)
+    {
+        if (!ModelState.IsValid)
+        {
+            logger.LogError("Failed to update the schedule class {Id} journal: model state validation error occured.", id);
+            return BadRequest("Failed to update the schedule class journal: model state validation error occured.");
+        }
+        
+        await service.UpdateScheduleClassJournalAsync(id, journalDto, cancellationToken);
+        return Ok();
     }
 }

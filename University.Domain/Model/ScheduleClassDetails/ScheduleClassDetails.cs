@@ -26,5 +26,5 @@ public class ScheduleClassDetails
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    public IEnumerable<StudentDetails> StudentDetailsList { get; set; } = [];
+    public List<StudentDetails> StudentDetailsList { get; set; } = [];
 }

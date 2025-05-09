@@ -45,28 +45,23 @@ public static class ApiSecurityExtensions
 
     public static void AddApiAuthorization(this IServiceCollection services)
     {
-        services.AddAuthorization(options =>
-        {
-            options.AddPolicy("RequireAdminRole", policy => 
-                policy.RequireRole(UserRole.Admin.ToString()));
-
-            options.AddPolicy("RequireManagerRole", policy => 
+        services.AddAuthorizationBuilder()
+            .AddPolicy("RequireAdminRole", policy => 
+                policy.RequireRole(nameof(UserRole.Admin)))
+            .AddPolicy("RequireManagerRole", policy => 
                 policy.RequireAssertion(context =>
-                    context.User.IsInRole(UserRole.Admin.ToString()) ||
-                    context.User.IsInRole(UserRole.Manager.ToString())));
-
-            options.AddPolicy("RequireTeacherRole", policy => 
+                    context.User.IsInRole(nameof(UserRole.Admin)) ||
+                    context.User.IsInRole(nameof(UserRole.Manager))))
+            .AddPolicy("RequireTeacherRole", policy => 
                 policy.RequireAssertion(context =>
-                    context.User.IsInRole(UserRole.Admin.ToString()) ||
-                    context.User.IsInRole(UserRole.Manager.ToString()) ||
-                    context.User.IsInRole(UserRole.Teacher.ToString())));
-
-            options.AddPolicy("RequireStudentRole", policy => 
+                    context.User.IsInRole(nameof(UserRole.Admin)) ||
+                    context.User.IsInRole(nameof(UserRole.Manager)) ||
+                    context.User.IsInRole(nameof(UserRole.Teacher))))
+            .AddPolicy("RequireStudentRole", policy => 
                 policy.RequireAssertion(context =>
-                    context.User.IsInRole(UserRole.Admin.ToString()) ||
-                    context.User.IsInRole(UserRole.Manager.ToString()) ||
-                    context.User.IsInRole(UserRole.Teacher.ToString()) ||
-                    context.User.IsInRole(UserRole.Student.ToString())));
-        });
+                    context.User.IsInRole(nameof(UserRole.Admin)) ||
+                    context.User.IsInRole(nameof(UserRole.Manager)) ||
+                    context.User.IsInRole(nameof(UserRole.Teacher)) ||
+                    context.User.IsInRole(nameof(UserRole.Student))));
     }
 }
