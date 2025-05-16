@@ -69,4 +69,13 @@ public class StudyGroupRepository(UniversityContext context) : IStudyGroupReposi
         // context.StudyGroups.Update(entity);
         // await context.SaveChangesAsync();
     }
+
+    public IQueryable<StudyGroup> GetAllAsIQueryableAsync()
+    {
+        return context.StudyGroups.AsNoTracking()
+            .AsSplitQuery()
+            .Include(p => p.FieldOfStudy)
+            .Include(p => p.Students)
+            .AsQueryable();
+    }
 }

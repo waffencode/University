@@ -84,4 +84,38 @@ public class ScheduleClassController(IScheduleClassRepository repository, ISched
         await service.UpdateScheduleClassJournalAsync(id, journalDto, cancellationToken);
         return Ok();
     }
+
+    [Authorize]
+    [HttpGet("{id:guid}/groups")]
+    public async Task<IActionResult> GetStudyGroupsForClass(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Ok(await service.GetStudyGroupsForClassAsync(id, cancellationToken));
+        }
+        catch (EntityNotFoundException exception)
+        {
+            return NotFound(exception.Message);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError("An exception occurred when retrieving study groups for the schedule class {Id}. Cause: {Message}", id, exception.Message);
+            return StatusCode(500, exception.Message);
+        }
+    }
+
+    [Authorize]
+    [HttpGet("{id:guid}/details")]
+    public async Task<IActionResult> GetScheduleClassDetails(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return Ok(await service.GetScheduleClassDetailsAsync(id, cancellationToken));
+        }
+        catch (Exception exception)
+        {
+            logger.LogError("An exception occurred when retrieving the schedule class {Id} details. Cause: {Message}", id, exception.Message);
+            return StatusCode(500, exception.Message);
+        }
+    }
 }

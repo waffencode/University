@@ -13,4 +13,6 @@ public interface IStudyGroupRepository
     public Task DeleteAsync(Guid id);
 
     public Task UpdateAsync(StudyGroupDto entity);
+
+    public IQueryable<StudyGroup> GetAllAsIQueryableAsync();
 }

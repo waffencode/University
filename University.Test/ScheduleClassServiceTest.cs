@@ -77,7 +77,8 @@ public class ScheduleClassServiceTest
         await using var actContext = new UniversityContext(_dbContextOptions);
         var repository = new ScheduleClassRepository(actContext, Mock.Of<ILogger<ScheduleClassRepository>>());
         var userRepository = new UserRepository(actContext);
-        var service = new ScheduleClassService(repository, userRepository, _mockLogger.Object);
+        var studyGroupRepository = new StudyGroupRepository(actContext);
+        var service = new ScheduleClassService(repository, userRepository, studyGroupRepository, _mockLogger.Object);
 
         // Act
         await service.CreateScheduleClassAsync(dto, CancellationToken.None);
@@ -113,7 +114,8 @@ public class ScheduleClassServiceTest
         await using var context = new UniversityContext(_dbContextOptions);
         var repository = new ScheduleClassRepository(context, Mock.Of<ILogger<ScheduleClassRepository>>());
         var userRepository = new UserRepository(context);
-        var service = new ScheduleClassService(repository, userRepository, _mockLogger.Object);
+        var studyGroupRepository = new StudyGroupRepository(context);
+        var service = new ScheduleClassService(repository, userRepository, studyGroupRepository, _mockLogger.Object);
 
         // Act & Assert
         await Assert.ThrowsAsync<EntityNotFoundException>(() => 
@@ -129,7 +131,8 @@ public class ScheduleClassServiceTest
         await using var actContext = new UniversityContext(_dbContextOptions);
         var repository = new ScheduleClassRepository(actContext, Mock.Of<ILogger<ScheduleClassRepository>>());
         var userRepository = new UserRepository(actContext);
-        var service = new ScheduleClassService(repository, userRepository, _mockLogger.Object);
+        var studyGroupRepository = new StudyGroupRepository(actContext);
+        var service = new ScheduleClassService(repository, userRepository, studyGroupRepository, _mockLogger.Object);
 
         // Act & Assert
         await Assert.ThrowsAsync<EntityNotFoundException>(() => 
@@ -180,7 +183,8 @@ public async Task UpdateScheduleClassJournalAsync_ShouldUpdateStudentDetails()
     await using var actContext = new UniversityContext(_dbContextOptions);
     var repository = new ScheduleClassRepository(actContext, Mock.Of<ILogger<ScheduleClassRepository>>());
     var userRepository = new UserRepository(actContext);
-    var service = new ScheduleClassService(repository, userRepository, _mockLogger.Object);
+    var studyGroupRepository = new StudyGroupRepository(actContext);
+    var service = new ScheduleClassService(repository, userRepository, studyGroupRepository, _mockLogger.Object);
 
     // Act
     await service.UpdateScheduleClassJournalAsync(scheduleClass.Id, updatedDetails, CancellationToken.None);
@@ -219,7 +223,8 @@ public async Task UpdateScheduleClassJournalAsync_WhenClassNotFound_ThrowsInvali
     await using var context = new UniversityContext(_dbContextOptions);
     var repository = new ScheduleClassRepository(context, Mock.Of<ILogger<ScheduleClassRepository>>());
     var userRepository = new UserRepository(context);
-    var service = new ScheduleClassService(repository, userRepository, _mockLogger.Object);
+    var studyGroupRepository = new StudyGroupRepository(context);
+    var service = new ScheduleClassService(repository, userRepository, studyGroupRepository, _mockLogger.Object);
 
     // Act & Assert
     await Assert.ThrowsAsync<InvalidOperationException>(() => 
@@ -255,7 +260,8 @@ public async Task UpdateScheduleClassJournalAsync_ShouldClearExistingDetailsWhen
     await using var actContext = new UniversityContext(_dbContextOptions);
     var repository = new ScheduleClassRepository(actContext, Mock.Of<ILogger<ScheduleClassRepository>>());
     var userRepository = new UserRepository(actContext);
-    var service = new ScheduleClassService(repository, userRepository, _mockLogger.Object);
+    var studyGroupRepository = new StudyGroupRepository(actContext);
+    var service = new ScheduleClassService(repository, userRepository, studyGroupRepository, _mockLogger.Object);
 
     // Act
     await service.UpdateScheduleClassJournalAsync(scheduleClass.Id, emptyDetails, CancellationToken.None);

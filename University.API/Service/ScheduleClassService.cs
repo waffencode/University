@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using University.Domain;
 using University.Domain.Model;
 using University.Exceptions;
@@ -5,7 +6,10 @@ using University.Repository;
 
 namespace University.Service;
 
-public class ScheduleClassService(IScheduleClassRepository scheduleClassRepository, IUserRepository userRepository, ILogger<ScheduleClassService> logger) : IScheduleClassService
+public class ScheduleClassService(IScheduleClassRepository scheduleClassRepository, 
+    IUserRepository userRepository, 
+    IStudyGroupRepository studyGroupRepository, 
+    ILogger<ScheduleClassService> logger) : IScheduleClassService
 {
     public async Task CreateScheduleClassAsync(ScheduleClassDto scheduleClassDto, CancellationToken cancellationToken)
     {
@@ -56,5 +60,32 @@ public class ScheduleClassService(IScheduleClassRepository scheduleClassReposito
         
         await scheduleClassRepository.UpdateEntityAsync(entity, cancellationToken);
         logger.LogInformation("Updated Schedule Class Journal for {Guid}", classId);
+    }
+
+    public async Task<List<StudyGroupDto>> GetStudyGroupsForClassAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var scheduleClass = await scheduleClassRepository.GetAsEntityByIdAsync(id, cancellationToken);
+        if (scheduleClass == null)
+        {
+            throw new EntityNotFoundException($"A schedule class with the ID {id} was not found in the database");
+        }
+        
+        var studyGroupsQueryable = studyGroupRepository.GetAllAsIQueryableAsync();
+        
+        return await studyGroupsQueryable
+            .Where(studyGroup => scheduleClass.Groups.Contains(studyGroup))
+            .Select(s => StudyGroupMapper.StudyGroupToStudyGroupDto(s))
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<ScheduleClassDetailsDto> GetScheduleClassDetailsAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var scheduleClass = await scheduleClassRepository.GetAsEntityByIdAsync(id, cancellationToken);
+        if (scheduleClass == null)
+        {
+            throw new EntityNotFoundException($"A schedule class with the ID {id} was not found in the database");
+        }
+        
+        return ScheduleClassDetailsMapper.ScheduleClassDetailsToScheduleClassDetailsDto(scheduleClass.Details);
     }
 }

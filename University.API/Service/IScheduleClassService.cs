@@ -9,4 +9,7 @@ public interface IScheduleClassService
 
     public Task UpdateScheduleClassJournalAsync(Guid classId, ScheduleClassDetailsDto scheduleClassDetailsDto,
         CancellationToken cancellationToken);
+
+    Task<List<StudyGroupDto>> GetStudyGroupsForClassAsync(Guid id, CancellationToken cancellationToken);
+    Task<ScheduleClassDetailsDto> GetScheduleClassDetailsAsync(Guid id, CancellationToken cancellationToken);
 }
