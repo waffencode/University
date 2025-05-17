@@ -50,9 +50,7 @@ public class ScheduleClassService(IScheduleClassRepository scheduleClassReposito
             Attendance = dto.Attendance,
             Grade = dto.Grade
         }).ToList();
-
-        await Task.WhenAll(studentDetailsTasks);
-
+        
         entity.Details = new ScheduleClassDetails
         {
             StudentDetailsList = studentDetailsTasks.Select(task => task.Result).ToList()
