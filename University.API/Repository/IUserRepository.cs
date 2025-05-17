@@ -10,6 +10,8 @@ public interface IUserRepository
     
     public Task<User?> GetUserById(Guid id);
     
+    public Task<List<User>> GetUsersByIds(List<Guid> ids, CancellationToken cancellationToken);
+    
     public Task<bool> IsUserExist(Guid id);
     
     public Task DeleteUser(Guid id);

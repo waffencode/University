@@ -41,6 +41,8 @@ public class UserRepository : IUserRepository
     /// <returns>An instance of <see cref="User"/> if exists, otherwise null.</returns>
     public async Task<User?> GetUserById(Guid id) => await Context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
+    public async Task<List<User>> GetUsersByIds(List<Guid> ids, CancellationToken cancellationToken) => await Context.Users.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+
     /// <summary>
     /// Async method that ensures that user exists.
     /// </summary>

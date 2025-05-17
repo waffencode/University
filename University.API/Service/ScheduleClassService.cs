@@ -44,16 +44,23 @@ public class ScheduleClassService(IScheduleClassRepository scheduleClassReposito
         }
         
         // We assume that the list of students is complete and up-to-date.
-        var studentDetailsTasks = scheduleClassDetailsDto.StudentDetailsDtoList.Select(async dto => new StudentDetails
+        var studentIds = scheduleClassDetailsDto.StudentDetailsDtoList.Select(dto => dto.StudentId).ToList();
+        var students = await userRepository.GetUsersByIds(studentIds, cancellationToken);
+
+        var studentDetailsList = scheduleClassDetailsDto.StudentDetailsDtoList.Select(dto => 
         {
-            Student = await userRepository.GetUserById(dto.StudentId),
-            Attendance = dto.Attendance,
-            Grade = dto.Grade
+            var student = students.FirstOrDefault(s => s.Id == dto.StudentId);
+            return new StudentDetails
+            {
+                Student = student,
+                Attendance = dto.Attendance,
+                Grade = dto.Grade
+            };
         }).ToList();
-        
+
         entity.Details = new ScheduleClassDetails
         {
-            StudentDetailsList = studentDetailsTasks.Select(task => task.Result).ToList()
+            StudentDetailsList = studentDetailsList
         };
         
         await scheduleClassRepository.UpdateEntityAsync(entity, cancellationToken);
