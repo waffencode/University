@@ -1,8 +1,8 @@
 namespace University.Domain;
 
-public class Message
+public class MessageDto
 {
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid Id { get; set; } = Guid.NewGuid();
     
     public string Topic { get; set; } = string.Empty;
 
@@ -12,13 +12,13 @@ public class Message
     
     public bool IsImportant { get; set; }
     
-    public required User Sender { get; set; }
+    public Guid SenderId { get; set; }
 
-    public List<User> Receivers { get; set; } = [];
+    public List<Guid> ReceiversIds { get; set; } = [];
 
-    public List<StudyGroup> ReceiversStudyGroups { get; set; } = [];
+    public List<Guid> ReceiversStudyGroupsIds { get; set; } = [];
     
     public List<Uri> Attachments { get; set; } = [];
 
-    public ScheduleClass? RelatedClass { get; set; }
+    public Guid? RelatedClassId { get; set; }
 }
