@@ -70,7 +70,7 @@ public class StudyGroupRepository(UniversityContext context) : IStudyGroupReposi
         // await context.SaveChangesAsync();
     }
 
-    public IQueryable<StudyGroup> GetAllAsIQueryableAsync()
+    public IQueryable<StudyGroup> GetAllAsIQueryable()
     {
         return context.StudyGroups.AsNoTracking()
             .AsSplitQuery()

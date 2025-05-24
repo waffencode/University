@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using University.Domain;
+using University.Exceptions;
 using University.Infrastructure;
 
 namespace University.Repository;
@@ -18,32 +19,47 @@ public class MessageRepository : IMessageRepository
             .Include(m => m.Sender)
             .Include(m => m.Receivers)
             .Include(m => m.ReceiversStudyGroups)
+            .Include(m => m.RelatedClass)
             .ToListAsync();
     }
-
+    
     public async Task<List<Message>> GetMessagesBySender(User user)
     {
         return await Context.Messages.Where(m => m.Sender.Equals(user))
             .Include(m => m.Sender)
             .Include(m => m.Receivers)
+            .Include(m => m.ReceiversStudyGroups)
+            .Include(m => m.RelatedClass)
             .ToListAsync();
     }
 
-    public async Task AddMessage(Message message)
+    public async Task AddAsync(MessageDto dto, CancellationToken cancellationToken = default)
     {
-        var contextSender = Context.Users.FirstOrDefault(u => u.Id == message.Sender.Id);
-        
-        if (contextSender is not null)
+        var receivers = await Context.Users.Where(x => dto.ReceiversIds.Contains(x.Id)).ToListAsync(cancellationToken);
+        var receiversStudyGroups = await Context.StudyGroups.Where(x => dto.ReceiversStudyGroupsIds.Contains(x.Id)).ToListAsync(cancellationToken);
+        var relatedClass = await Context.ScheduleClasses.FirstOrDefaultAsync(x => x.Id == dto.RelatedClassId, cancellationToken);
+        var sender = await Context.Users.FirstOrDefaultAsync(x => x.Id == dto.SenderId, cancellationToken);
+        if (sender is null)
         {
-            message.Sender = contextSender;
+            throw new EntityNotFoundException(typeof(User), dto.SenderId.ToString());
         }
         
-        var receivers = message.Receivers.Select(receiver => Context.Users.FirstOrDefault(u => u.Id == receiver.Id)).OfType<User>().ToList();
-
-        message.Receivers = receivers;
+        var entity = new Message
+        {
+            Id = dto.Id,
+            Attachments = dto.Attachments,
+            Date = dto.Date,
+            IsImportant = dto.IsImportant,
+            Receivers = receivers,
+            ReceiversStudyGroups = receiversStudyGroups,
+            RelatedClass = relatedClass,
+            Sender = sender,
+            Text = dto.Text,
+            Topic = dto.Topic
+        };
         
-        await Context.Messages.AddAsync(message);
-        await Context.SaveChangesAsync();
+        await Context.Messages.AddAsync(entity, cancellationToken);
+        await Context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task DeleteMessage(Guid id)

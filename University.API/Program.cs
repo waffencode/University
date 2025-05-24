@@ -46,6 +46,7 @@ builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 builder.Services.AddScoped<IScheduleClassRepository, ScheduleClassRepository>();
 builder.Services.AddScoped<ISubjectWorkProgramRepository, SubjectWorkProgramRepository>();
 builder.Services.AddScoped<IScheduleClassService, ScheduleClassService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
 
 builder.Services.Configure<JwtTokenProvider>(builder.Configuration);
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));

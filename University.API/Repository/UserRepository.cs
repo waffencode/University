@@ -122,5 +122,10 @@ public class UserRepository : IUserRepository
         return user;
     }
 
+    public IQueryable<User> GetAllAsIQueryable() =>
+        Context.Users.AsNoTracking()
+            .AsSplitQuery()
+            .AsQueryable();
+
     public async Task<List<User>> GetUnauthorisedUsers() => await Context.Users.Where(x => x.Role == UserRole.Unauthorized).ToListAsync();
 }

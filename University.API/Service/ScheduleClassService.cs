@@ -75,7 +75,7 @@ public class ScheduleClassService(IScheduleClassRepository scheduleClassReposito
             throw new EntityNotFoundException($"A schedule class with the ID {id} was not found in the database");
         }
         
-        var studyGroupsQueryable = studyGroupRepository.GetAllAsIQueryableAsync();
+        var studyGroupsQueryable = studyGroupRepository.GetAllAsIQueryable();
         
         return await studyGroupsQueryable
             .Where(studyGroup => scheduleClass.Groups.Contains(studyGroup))

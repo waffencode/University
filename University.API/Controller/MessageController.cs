@@ -3,33 +3,30 @@ using Microsoft.AspNetCore.Mvc;
 using University.Domain;
 using University.Infrastructure;
 using University.Repository;
+using University.Service;
 
 namespace University.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class MessageController : ControllerBase
+public class MessageController(IMessageService service, IMessageRepository messageRepository, IUserRepository userRepository, ILogger<UserController> logger) : ControllerBase
 {
-    private readonly MessageRepository _messageRepository;
-    private readonly UserRepository _userRepository;
-    private readonly ILogger<UserController> _logger;
-    
-    public MessageController(UniversityContext universityContext, ILogger<UserController> logger)
-    {
-        _messageRepository = new MessageRepository(universityContext);
-        _userRepository = new UserRepository(universityContext);
-        _logger = logger;
-    }
-
     [HttpPost]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> SendMessage(Message message)
+    public async Task<IActionResult> SendMessage(MessageDto message, CancellationToken cancellationToken)
     {
-        await _messageRepository.AddMessage(message);
-        _logger.LogInformation("Message <{id}> has been sent", message.Id);
-        return CreatedAtAction(nameof(SendMessage), message);
+        try
+        {
+            await messageRepository.AddAsync(message, cancellationToken);
+            logger.LogInformation("Message <{id}> has been sent", message.Id);
+            return CreatedAtAction(nameof(SendMessage), message);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
     
     [HttpGet("{id:guid}")]
@@ -39,8 +36,8 @@ public class MessageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<List<Message>>> GetMessagesForUser(Guid id)
     {
-        var user = await _userRepository.GetUserById(id) ?? throw new Exception("User not found");
-        return Ok(await _messageRepository.GetMessagesByReceiver(user));
+        var user = await userRepository.GetUserById(id) ?? throw new Exception("User not found");
+        return Ok(await messageRepository.GetMessagesByReceiver(user));
     }
 
     [HttpDelete("{id:guid}")]
@@ -51,12 +48,19 @@ public class MessageController : ControllerBase
     {
         try
         {
-            await _messageRepository.DeleteMessage(id);
+            await messageRepository.DeleteMessage(id);
             return Ok();
         }
         catch (Exception e)
         {
             return BadRequest(e.Message);
         }
+    }
+
+    [HttpGet("receivers/{id:guid}")]
+    [Authorize]
+    public async Task<ActionResult<List<User>>> GetAvailableReceivers(Guid id, CancellationToken cancellationToken)
+    {
+        return Ok(await service.GetAvailableReceiversForUserAsync(id, cancellationToken));
     }
 }

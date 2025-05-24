@@ -7,8 +7,8 @@ public interface IMessageRepository
     public Task<List<Message>> GetMessagesByReceiver(User user);
 
     public Task<List<Message>> GetMessagesBySender(User user);
-    
-    public Task AddMessage(Message message);
+
+    public Task AddAsync(MessageDto dto, CancellationToken cancellationToken = default);
     
     public Task DeleteMessage(Guid id);
     

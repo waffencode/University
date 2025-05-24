@@ -85,6 +85,9 @@
       <Compile Update="Service\ScheduleClassService.cs">
         <DependentUpon>IScheduleClassService.cs</DependentUpon>
       </Compile>
+      <Compile Update="Service\MessageService.cs">
+        <DependentUpon>IMessageService.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

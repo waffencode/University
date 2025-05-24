@@ -14,5 +14,5 @@ public interface IStudyGroupRepository
 
     public Task UpdateAsync(StudyGroupDto entity);
 
-    public IQueryable<StudyGroup> GetAllAsIQueryableAsync();
+    public IQueryable<StudyGroup> GetAllAsIQueryable();
 }

@@ -22,5 +22,7 @@ public interface IUserRepository
     
     public Task<User> GetUserByEmail(string email);
 
+    public IQueryable<User> GetAllAsIQueryable();
+
     public Task<List<User>> GetUnauthorisedUsers();
 }
