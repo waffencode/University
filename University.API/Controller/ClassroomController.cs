@@ -8,23 +8,14 @@ namespace University.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ClassroomController : ControllerBase
+public class ClassroomController(IClassroomRepository repository, ILogger<ClassroomController> logger) : ControllerBase
 {
-    private readonly ILogger<UserController> _logger;
-    private readonly ClassroomRepository _classroomRepository;
-    
-    public ClassroomController(UniversityContext universityContext, ILogger<UserController> logger)
-    {
-        _logger = logger;
-        _classroomRepository = new ClassroomRepository(universityContext);
-    }
-
     [HttpGet]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetClassrooms()
     {
-        return Ok(await _classroomRepository.GetAllAsync());
+        return Ok(await repository.GetAllAsync());
     }
 
     [HttpGet("{id:guid}")]
@@ -33,15 +24,13 @@ public class ClassroomController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetClassroom(Guid id)
     {
-        var classroom = await _classroomRepository.GetByIdAsync(id);
+        var classroom = await repository.GetByIdAsync(id);
         if (classroom == null)
         {
             return NotFound();
         }
-        else
-        {
-            return Ok(classroom);
-        }
+
+        return Ok(classroom);
     }
 
     [HttpPost]
@@ -49,7 +38,7 @@ public class ClassroomController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> CreateClassroom(Classroom classroom)
     {
-        await _classroomRepository.AddAsync(classroom);
+        await repository.AddAsync(classroom);
         return Ok();
     }
 
@@ -59,13 +48,13 @@ public class ClassroomController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateClassroom(Guid id, Classroom classroom)
     {
-        var classroomToUpdate = await _classroomRepository.GetByIdAsync(id);
+        var classroomToUpdate = await repository.GetByIdAsync(id);
         if (classroomToUpdate == null)
         {
             return NotFound();
         }
 
-        await _classroomRepository.UpdateAsync(classroom);
+        await repository.UpdateAsync(classroom);
         return Ok();
     }
 
@@ -74,7 +63,7 @@ public class ClassroomController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteClassroom(Guid id)
     {
-        await _classroomRepository.DeleteAsync(id);
+        await repository.DeleteAsync(id);
         return Ok();
     }
 }
