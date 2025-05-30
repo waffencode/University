@@ -71,11 +71,14 @@ public class SubjectWorkProgramRepositoryTest
         var subjectWorkProgram = TestData.CreateTestWorkProgram(subject: subject);
         await _context.SubjectWorkPrograms.AddAsync(subjectWorkProgram);
         await _context.SaveChangesAsync();
-        var entityToUpdate = await _context.SubjectWorkPrograms.AsNoTracking().Include(s => s.Classes).FirstAsync(s=>s.Id == subjectWorkProgram.Id);
-        
+        var entityToUpdate = await _context.SubjectWorkPrograms.AsNoTracking()
+            .Include(s => s.Subject)
+            .Include(s => s.Classes)
+            .FirstAsync(s => s.Id == subjectWorkProgram.Id);
+
         // Act
         entityToUpdate.Classes.First().Theme = "Geometry";
-        await _repository.UpdateAsync(subjectWorkProgram);
+        await _repository.UpdateAsync(entityToUpdate);
 
         // Assert
         var entity = await _repository.GetByIdAsync(subjectWorkProgram.Id);

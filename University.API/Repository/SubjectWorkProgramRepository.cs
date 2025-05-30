@@ -115,11 +115,6 @@ public class SubjectWorkProgramRepository : ISubjectWorkProgramRepository
         existingEntity.Subject = existingSubject;
         existingEntity.Classes.Clear();
         existingEntity.Classes.AddRange(entity.Classes);
-        // existingEntity.Classes = entity.Classes;
-        // foreach (var newClass in entity.Classes)
-        // {
-        //     existingEntity.Classes.Add(newClass);
-        // }
         
         Context.Update(existingEntity);
         await Context.SaveChangesAsync();
