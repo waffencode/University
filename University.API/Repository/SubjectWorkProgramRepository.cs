@@ -34,10 +34,9 @@ public class SubjectWorkProgramRepository : ISubjectWorkProgramRepository
     {
         var existingSubject = await Context.Subjects
             .FirstOrDefaultAsync(x => x.Id == entity.Subject.Id);
-    
         if (existingSubject == null)
         {
-            throw new Exception("Subject is not in database.");
+            throw new EntityNotFoundException(typeof(Subject), entity.Subject.Id.ToString());
         }
         
         entity.Subject = existingSubject;
@@ -101,27 +100,28 @@ public class SubjectWorkProgramRepository : ISubjectWorkProgramRepository
     public async Task UpdateAsync(SubjectWorkProgram entity)
     {
         var existingEntity = await GetByIdAsync(entity.Id);
-
-        if (existingEntity is not null)
+        if (existingEntity is null)
         {
-            var existingSubject = await Context.Subjects
-                .FirstOrDefaultAsync(x => x.Id == entity.Subject.Id);
-    
-            if (existingSubject == null)
-            {
-                throw new Exception("Subject is not in database.");
-            }
-            
-            existingEntity.Subject = existingSubject;
-            existingEntity.Classes.Clear();
-            
-            foreach (var newClass in entity.Classes)
-            {
-                existingEntity.Classes.Add(newClass);
-            }
-            
-            Context.Update(existingEntity);
-            await Context.SaveChangesAsync();
+            throw new EntityNotFoundException(typeof(SubjectWorkProgram), entity.Id.ToString());
         }
+
+        var existingSubject = await Context.Subjects
+                .FirstOrDefaultAsync(x => x.Id == entity.Subject.Id);
+        if (existingSubject == null)
+        {
+            throw new EntityNotFoundException(typeof(Subject), entity.Subject.Id.ToString());
+        }
+        
+        existingEntity.Subject = existingSubject;
+        existingEntity.Classes.Clear();
+        existingEntity.Classes.AddRange(entity.Classes);
+        // existingEntity.Classes = entity.Classes;
+        // foreach (var newClass in entity.Classes)
+        // {
+        //     existingEntity.Classes.Add(newClass);
+        // }
+        
+        Context.Update(existingEntity);
+        await Context.SaveChangesAsync();
     }
 }

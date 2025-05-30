@@ -13,9 +13,12 @@ public class PlannedClass
 
 public class SubjectWorkProgram
 {
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid Id { get; set; } = Guid.NewGuid();
     
     public required Subject Subject { get; set; }
 
+    /// <summary>
+    /// The thematic plan of the subject work program.
+    /// </summary>
     public List<PlannedClass> Classes { get; set; } = [];
 }

@@ -11,5 +11,6 @@ public interface IScheduleClassService
         CancellationToken cancellationToken);
 
     Task<List<StudyGroupDto>> GetStudyGroupsForClassAsync(Guid id, CancellationToken cancellationToken);
+    
     Task<ScheduleClassDetailsDto> GetScheduleClassDetailsAsync(Guid id, CancellationToken cancellationToken);
 }

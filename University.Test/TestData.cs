@@ -1,9 +1,9 @@
 using University.Domain;
 using University.Domain.Model;
 
-namespace University.Test.TestData;
+namespace University.Test;
 
-public static class ScheduleClassTestData
+public static class TestData
 {
     public static ScheduleClass CreateValidScheduleClass(
         Guid? id = null,
@@ -104,19 +104,26 @@ public static class ScheduleClassTestData
         };
     }
 
-    public static SubjectWorkProgram CreateTestWorkProgram(Guid? id = null)
+    public static SubjectWorkProgram CreateTestWorkProgram(Guid? id = null, Subject? subject = null)
     {
         return new SubjectWorkProgram
         {
             Id = id ?? Guid.NewGuid(),
-            Subject = new Subject { Name = "Mathematics" },
-            Classes = new List<PlannedClass>
-            {
-                new() { Theme = "Algebra", Hours = 2, ClassType = ClassType.Lecture }
-            }
+            Subject = subject ?? new Subject { Name = "Mathematics" },
+            Classes = [new PlannedClass { Theme = "Algebra", Hours = 2, ClassType = ClassType.Lecture }]
         };
     }
 
+    public static Subject CreateTestSubject(
+        Guid? id = null)
+    {
+        return new Subject()
+        {
+            Id = id ?? Guid.NewGuid(),
+            Name = "Mathematics",
+        };
+    }
+    
     public static StudyGroup CreateTestStudyGroup(
         List<User> students = null,
         Guid? id = null,

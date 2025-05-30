@@ -276,20 +276,6 @@ public class UserController : ControllerBase
         var requests = await _registrationRequestRepository.GetPendingRegistrationRequests();
         return requests.Count == 0 ? NoContent() : Ok(requests);
     }
-    
-    // For testing purposes.
-    // TODO: Remove.
-    [HttpGet("whoami")]
-    [Authorize]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<User>> Whoami()
-    {
-        var id = GetRequestAuthorUserId();
-        var user = (await _userRepository.GetUserById(id));
-        
-        return Ok(user);
-    }
 
     [HttpGet("check")]
     [ProducesResponseType(StatusCodes.Status200OK)]

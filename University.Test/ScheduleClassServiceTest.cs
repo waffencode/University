@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using University.Repository;
 using University.Service;
-using University.Test.TestData;
 
 namespace University.Test;
 
@@ -143,12 +142,12 @@ public class ScheduleClassServiceTest
 public async Task UpdateScheduleClassJournalAsync_ShouldUpdateStudentDetails()
 {
     // Arrange
-    var teacher = ScheduleClassTestData.CreateTestTeacher();
-    var student1 = ScheduleClassTestData.CreateTestStudent();
-    var student2 = ScheduleClassTestData.CreateTestStudent();
-    var studyGroup = ScheduleClassTestData.CreateTestStudyGroup(new List<User> { student1 });
+    var teacher = TestData.CreateTestTeacher();
+    var student1 = TestData.CreateTestStudent();
+    var student2 = TestData.CreateTestStudent();
+    var studyGroup = TestData.CreateTestStudyGroup(new List<User> { student1 });
     
-    var scheduleClass = ScheduleClassTestData.CreateValidScheduleClass(
+    var scheduleClass = TestData.CreateValidScheduleClass(
         teacher: teacher,
         groups: new List<StudyGroup> { studyGroup });
 
@@ -235,11 +234,11 @@ public async Task UpdateScheduleClassJournalAsync_WhenClassNotFound_ThrowsInvali
 public async Task UpdateScheduleClassJournalAsync_ShouldClearExistingDetailsWhenEmptyListProvided()
 {
     // Arrange
-    var teacher = ScheduleClassTestData.CreateTestTeacher();
-    var student = ScheduleClassTestData.CreateTestStudent();
-    var studyGroup = ScheduleClassTestData.CreateTestStudyGroup(new List<User> { student });
+    var teacher = TestData.CreateTestTeacher();
+    var student = TestData.CreateTestStudent();
+    var studyGroup = TestData.CreateTestStudyGroup(new List<User> { student });
     
-    var scheduleClass = ScheduleClassTestData.CreateValidScheduleClass(
+    var scheduleClass = TestData.CreateValidScheduleClass(
         teacher: teacher,
         groups: new List<StudyGroup> { studyGroup });
 
