@@ -307,14 +307,37 @@ public class UserController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the request issuer's profile if he is authorized.
+    /// </summary>
+    /// <returns>The <see cref="User"/> object if the profile is found, otherwise returns NotFound status.
+    /// Returns BadRequest if the issuer's GUID can't be parsed.</returns>
     [Authorize]
     [HttpGet("profile")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<User>> GetUserProfile()
     {
-        var userId = GetRequestAuthorUserId();
-        return Ok(await _userRepository.GetUserById(userId));
+        try
+        {
+            var userId = GetRequestAuthorUserId();
+            var user = await _userRepository.GetUserById(userId);
+            if (user is null)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
+        catch (InvalidOperationException)
+        {
+            return BadRequest();
+        }
+        catch (FormatException)
+        {
+            return BadRequest();
+        }
     }
 
     [NonAction]
