@@ -214,8 +214,7 @@ public class UserController : ControllerBase
                 throw new Exception("Authentication token is null or empty.");
             }
             
-            var user = await _userRepository.GetUserByEmail(email);
-            return Ok(user.Id);
+            return Ok();
         }
         catch (InvalidOperationException ex)
         {
@@ -307,18 +306,24 @@ public class UserController : ControllerBase
             return Ok(false);
         }
     }
-    
+
+    [Authorize]
+    [HttpGet("profile")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<User>> GetUserProfile()
+    {
+        var userId = GetRequestAuthorUserId();
+        return Ok(await _userRepository.GetUserById(userId));
+    }
+
     [NonAction]
     private Guid GetRequestAuthorUserId()
     {
         var rawId = User.FindFirst("userId")?.Value;
 
-        if (string.IsNullOrEmpty(rawId))
-        {
-            throw new InvalidOperationException("Failed to parse GUID of the request issuer.");
-        }
-
-        var id = Guid.Parse(rawId);
-        return id;
+        return string.IsNullOrEmpty(rawId)
+            ? throw new InvalidOperationException("Failed to parse GUID of the request issuer.")
+            : Guid.Parse(rawId);
     }
 }

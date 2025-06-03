@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using University.Domain;
+using University.Exceptions;
 using University.Repository;
 using University.Security;
 
@@ -34,8 +35,10 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
     public async Task AuthorizeUser(Guid registrationRequestId)
     {
         var registrationRequest = await registrationRequestRepository.GetRegistrationRequestById(registrationRequestId);
-        
-        Debug.Assert(registrationRequest is not null, "registrationRequest is null");
+        if (registrationRequest is null)
+        {
+            throw new EntityNotFoundException(typeof(RegistrationRequest), registrationRequestId.ToString());
+        }
         
         var user = registrationRequest.User;
         user.Role = registrationRequest.RequestedRole;
@@ -46,6 +49,11 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
 
     public async Task<RegistrationRequest> GetUserPendingRegistrationRequestAsync(Guid userId)
     {
+        if (!await userRepository.IsUserExist(userId))
+        {
+            throw new EntityNotFoundException(typeof(User), userId.ToString());
+        }
+        
         return (await registrationRequestRepository.GetPendingRegistrationRequests())
             .First(r => r.User.Id.Equals(userId));
     }
