@@ -242,13 +242,21 @@ public class UserController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> Register(User user)
     {
-        await _userService.Register(user);
-        _logger.LogInformation("User <{email}> successfully registered. Created registration request {requestId}.", 
-            user.Email,
-            (await _userService.GetUserPendingRegistrationRequestAsync(user.Id)).Id);
-        return Ok();
+        try
+        {
+            await _userService.Register(user);
+            _logger.LogInformation("User <{email}> successfully registered. Created registration request {requestId}.",
+                user.Email,
+                (await _userService.GetUserPendingRegistrationRequestAsync(user.Id)).Id);
+            return Ok();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
     
+    // TODO: Change to POST
     [HttpGet("authorize/{requestId:guid}")]
     [Authorize(Policy = "RequireAdminRole")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -328,7 +336,7 @@ public class UserController : ControllerBase
                 return NotFound();
             }
 
-            return Ok();
+            return Ok(user);
         }
         catch (InvalidOperationException)
         {
@@ -338,6 +346,16 @@ public class UserController : ControllerBase
         {
             return BadRequest();
         }
+    }
+
+    [Authorize]
+    [HttpGet("search")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<User>>> SearchUsersByName(string nameSubstring, CancellationToken cancellationToken)
+    {
+        var foundUsers = await _userRepository.FindUserByName(nameSubstring, cancellationToken);
+        return foundUsers.Any() ? Ok(foundUsers) : NoContent();
     }
 
     [NonAction]

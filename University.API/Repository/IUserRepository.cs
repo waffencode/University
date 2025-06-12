@@ -25,4 +25,6 @@ public interface IUserRepository
     public IQueryable<User> GetAllAsIQueryable();
 
     public Task<List<User>> GetUnauthorisedUsers();
+    
+    public Task<IEnumerable<User>> FindUserByName(string nameSubstring, CancellationToken cancellationToken);
 }

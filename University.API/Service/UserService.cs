@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using University.Domain;
 using University.Exceptions;
 using University.Repository;

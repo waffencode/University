@@ -7,49 +7,54 @@ namespace University.Repository;
 /// <summary>
 /// Repository for <see cref="User"/>. Implements CRUD operations.
 /// </summary>
+/// <param name="context">An instance of the <see cref="UniversityContext"/>.</param>
 /// <author>waffencode@gmail.com</author>
-public class UserRepository : IUserRepository
+public class UserRepository(UniversityContext context) : IUserRepository
 {
-    /// <summary>
-    /// An instance of <see cref="UniversityContext"/>.
-    /// </summary>
-    private UniversityContext Context { get; }
-
-    /// <summary>
-    /// Default parameterized constructor. Parameter should not be null.
-    /// </summary>
-    /// <param name="context">An instance of <see cref="UniversityContext"/>.</param>
-    /// <exception cref="ArgumentNullException">Thrown if parameter is null.</exception>
-    public UserRepository(UniversityContext context) => Context = context ?? throw new ArgumentNullException(nameof(context));
-    
     /// <summary>
     /// Async method that adds user to the database.
     /// </summary>
     /// <param name="user">An instance of <see cref="User"/>.</param>
     public async Task CreateUser(User user)
     {
-        await Context.Users.AddAsync(user);
-        await Context.SaveChangesAsync();
+        if (await IsUserExist(user.Id))
+        {
+            throw new InvalidOperationException($"A user with the ID {user.Id} already exists in the database.");
+        }
+
+        await context.Users.AddAsync(user);
+        await context.SaveChangesAsync();
     }
 
-    public async Task<List<User>> GetAllUsers() => await Context.Users.ToListAsync();
+    /// <summary>
+    /// Asynchronously returns all users.
+    /// </summary>
+    /// <returns></returns>
+    public async Task<List<User>> GetAllUsers() => await context.Users.ToListAsync();
 
     /// <summary>
     /// Async method that finds user by guid.
     /// </summary>
     /// <param name="id">Guid of user.</param>
     /// <returns>An instance of <see cref="User"/> if exists, otherwise null.</returns>
-    public async Task<User?> GetUserById(Guid id) => await Context.Users.FirstOrDefaultAsync(x => x.Id == id);
+    public async Task<User?> GetUserById(Guid id) => await context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
-    public async Task<List<User>> GetUsersByIds(List<Guid> ids, CancellationToken cancellationToken) => await Context.Users.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+    /// <summary>
+    /// Asynchronously returns a list of users with specified ids.
+    /// </summary>
+    /// <param name="ids"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<List<User>> GetUsersByIds(List<Guid> ids, CancellationToken cancellationToken) =>
+        await context.Users.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
 
     /// <summary>
     /// Async method that ensures that user exists.
     /// </summary>
     /// <param name="id">Guid of user.</param>
     /// <returns>true if user exists, otherwise false</returns>
-    public async Task<bool> IsUserExist(Guid id)  => await Context.Users.AnyAsync(u => u.Id == id);
-    
+    public async Task<bool> IsUserExist(Guid id) => await context.Users.AnyAsync(u => u.Id == id);
+
     /// <summary>
     /// Async method to delete user.
     /// </summary>
@@ -62,9 +67,9 @@ public class UserRepository : IUserRepository
         {
             throw new InvalidOperationException("User not found");
         }
-        
-        Context.Users.Remove(user);
-        await Context.SaveChangesAsync();
+
+        context.Users.Remove(user);
+        await context.SaveChangesAsync();
     }
 
     /// <summary>
@@ -79,11 +84,11 @@ public class UserRepository : IUserRepository
         {
             throw new InvalidOperationException("User not found");
         }
-        
-        Context.Users.Update(user);
-        await Context.SaveChangesAsync();
+
+        context.Users.Update(user);
+        await context.SaveChangesAsync();
     }
-    
+
     /// <summary>
     /// Asynchronous method to update user partially. New value will replace existing one only if new value is not null.
     /// </summary>
@@ -98,12 +103,12 @@ public class UserRepository : IUserRepository
         {
             throw new InvalidOperationException("User not found");
         }
-        
+
         var updatedUser = currentUser.GetPartiallyUpdatedUser(user);
-        Context.Users.Update(updatedUser);
-        await Context.SaveChangesAsync();
+        context.Users.Update(updatedUser);
+        await context.SaveChangesAsync();
     }
-    
+
     /// <summary>
     /// Asynchronously retrieves a User object from the database by email address.
     /// </summary>
@@ -112,20 +117,28 @@ public class UserRepository : IUserRepository
     /// <exception cref="InvalidOperationException">Thrown when no User with the given email is found.</exception>
     public async Task<User> GetUserByEmail(string email)
     {
-        var user = await Context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
-        
+        var user = await context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
+
         if (user is null)
         {
             throw new InvalidOperationException("User not found");
         }
-        
+
         return user;
     }
 
     public IQueryable<User> GetAllAsIQueryable() =>
-        Context.Users.AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable();
+        context.Users.AsNoTracking().AsSplitQuery().AsQueryable();
 
-    public async Task<List<User>> GetUnauthorisedUsers() => await Context.Users.Where(x => x.Role == UserRole.Unauthorized).ToListAsync();
+    public async Task<List<User>> GetUnauthorisedUsers() =>
+        await context.Users.Where(x => x.Role == UserRole.Unauthorized).ToListAsync();
+
+    /// <summary>
+    /// Asynchronously finds a user which name contains the specified substring.
+    /// </summary>
+    /// <param name="nameSubstring"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns><see cref="User"/> if found, otherwise null.</returns>
+    public async Task<IEnumerable<User>> FindUserByName(string nameSubstring, CancellationToken cancellationToken) =>
+        await context.Users.Where(x => x.FullName.Contains(nameSubstring)).ToListAsync(cancellationToken);
 }
