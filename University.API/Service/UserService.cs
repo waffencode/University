@@ -18,6 +18,10 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
         throw new InvalidOperationException("Email or password is wrong");
     }
 
+    /// <summary>
+    /// Adds user information to database and creates a new registration request.
+    /// </summary>
+    /// <param name="user"></param>
     public async Task Register(User user)
     {
         await userRepository.CreateUser(user);
@@ -25,7 +29,7 @@ public class UserService(IUserRepository userRepository, IRegistrationRequestRep
         var registrationRequest = new RegistrationRequest
         {
             User = user,
-            RequestedRole = UserRole.Student
+            RequestedRole = user.Role
         };
         
         await registrationRequestRepository.CreateRegistrationRequest(registrationRequest);
