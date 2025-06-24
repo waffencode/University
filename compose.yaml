@@ -15,11 +15,8 @@
       context: .
       dockerfile: University.API/Dockerfile
     environment:
-      - ASPNETCORE_URLS=https://+:7065;
-      - ASPNETCORE_HTTPS_PORT=7065
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_URLS=http://+:7065;
     ports:
       - "7065:7065"
       - "5432:5432"
