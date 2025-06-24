@@ -6,6 +6,8 @@
       - ACCEPT_EULA=y
       - POSTGRES_HOST_AUTH_METHOD=trust
     restart: always
+    volumes:
+      - pg_data:/var/lib/postgresql/data
     network_mode: "service:university.api"
     
   university.api:
@@ -24,3 +26,5 @@
         - ~/.aspnet/https:/https:ro
     restart: always
     
+volumes:
+  pg_data:
