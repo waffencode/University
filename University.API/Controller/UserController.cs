@@ -197,7 +197,7 @@ public class UserController : ControllerBase
             {
                 HttpOnly = true,
                 Secure = false,
-                SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Lax,
                 IsEssential = true,
                 Expires = DateTime.Now.AddHours(_options.ExpireHours)
             };
