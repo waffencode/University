@@ -196,7 +196,7 @@ public class UserController : ControllerBase
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
+                Secure = false,
                 SameSite = SameSiteMode.None,
                 IsEssential = true,
                 Expires = DateTime.Now.AddHours(_options.ExpireHours)
