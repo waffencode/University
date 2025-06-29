@@ -9,13 +9,13 @@ WORKDIR /src
 COPY ["University.API/University.API.csproj", "University.API/"]
 COPY ["University.Domain/University.Domain.csproj", "University.Domain/"]
 RUN dotnet restore "University.API/University.API.csproj"
+
 COPY . .
-WORKDIR "/src/University.API"
-RUN dotnet build "University.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "University.API/University.API.csproj" -c $BUILD_CONFIGURATION --no-restore -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Debug
-RUN dotnet publish "University.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "University.API/University.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
