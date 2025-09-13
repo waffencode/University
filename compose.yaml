@@ -18,13 +18,19 @@
       dockerfile: University.API/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:7065;
+      - ASPNETCORE_URLS=http://+:80;
     ports:
-      - "7065:7065"
+      - "7065:80"
       - "5432:5432"
     volumes:
-        - ~/.aspnet/https:/https:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    networks:
+      - api-network
     restart: always
     
 volumes:
   pg_data:
+
+networks:
+  api-network:
+    driver: bridge
