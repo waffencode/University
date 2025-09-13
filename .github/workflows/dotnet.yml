@@ -3,6 +3,7 @@ name: Test, build & deploy demo
 on:
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   test:
