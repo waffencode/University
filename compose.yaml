@@ -6,6 +6,8 @@
       - ACCEPT_EULA=y
       - POSTGRES_HOST_AUTH_METHOD=trust
     restart: always
+    volumes:
+      - pg_data:/var/lib/postgresql/data
     network_mode: "service:university.api"
     
   university.api:
@@ -15,15 +17,20 @@
       context: .
       dockerfile: University.API/Dockerfile
     environment:
-      - ASPNETCORE_URLS=https://+:7065;
-      - ASPNETCORE_HTTPS_PORT=7065
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_URLS=http://+:80;
     ports:
-      - "7065:7065"
+      - "7065:80"
       - "5432:5432"
     volumes:
-        - ~/.aspnet/https:/https:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    networks:
+      - api-network
     restart: always
     
+volumes:
+  pg_data:
+
+networks:
+  api-network:
+    driver: bridge

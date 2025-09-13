@@ -11,12 +11,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("default", policy =>
     {
-        policy
+        policy.WithOrigins("http://localhost:5432")
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials()
-            .SetIsOriginAllowed(origin => new Uri(origin).IsLoopback);
-        policy.WithOrigins("http://localhost:5432")
+            .AllowCredentials();
+	policy.WithOrigins("http://31.207.76.19")
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
@@ -66,9 +65,8 @@ if (app.Environment.IsDevelopment())
 // TODO: Find way to store timestamp in database without using this.
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
+app.UseCors("default");
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseHttpsRedirection();
 app.MapControllers();
-app.UseCors("default");
 app.Run();
