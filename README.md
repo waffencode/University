@@ -18,7 +18,7 @@ University — информационная система для универс
 - PostgreSQL
 - Nginx
 - Docker
-- .NET CLI и инструментарий EF Core (`dotnet tool install --global dotnet-ef`)
+- .NET SDK и инструментарий EF Core (`dotnet tool install --global dotnet-ef`)
 
 Для выполнения развёртывания необходимо:
 
