@@ -1,6 +1,6 @@
 # University 🎓
 
-<img width="1920" height="1080" alt="MyCollages" src="https://github.com/user-attachments/assets/f8819358-e78b-413f-8aca-b2df0f9aeaa7" />
+<img width="1920" height="1080" src="https://github.com/user-attachments/assets/f8819358-e78b-413f-8aca-b2df0f9aeaa7" />
 
 University — информационная система для студентов и преподавателей университета с открытым исходным кодом. 
 
