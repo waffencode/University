@@ -20,8 +20,11 @@ University — информационная система для универс
 - Docker
 - .NET CLI и инструментарий EF Core (`dotnet tool install --global dotnet-ef`)
 
+Для выполнения развёртывания необходимо:
+
 Клонировать репозитории бэкенда и фронтенда:
 ```bash
+mkdir ~/deployments
 cd ~/deployments
 git clone https://github.com/waffencode/University.git
 git clone https://github.com/waffencode/university-frontend.git
@@ -29,8 +32,12 @@ git clone https://github.com/waffencode/university-frontend.git
 
 #### Backend
 
-Подготовить бэкенд-часть — вписать данные для подключения к базе в файл `appsettings.json` (если будет выполняться запуск Debug-конфигурации, то `appsettings.Development.json`):
+Перейти в директорию репозитория бэкенд-части:
+```bash
+cd ~/deployments/University
+```
 
+Подготовить бэкенд-часть — вписать данные для подключения к базе в файл `appsettings.json` (если будет выполняться запуск Debug-конфигурации, то `appsettings.Development.json`):
 ```json
 "ConnectionStrings": {
     "Database": "Host=localhost;Port=5432;Database=university;Username=postgres;Password=;"
@@ -38,7 +45,6 @@ git clone https://github.com/waffencode/university-frontend.git
 ```
 
 Установить переменную `BUILD_CONFIGURATION` и `ASPNETCORE_ENVIRONMENT`, обозначив тот тип билда, который вы хотите получить (релизный или отладочный):
-
 ```bash
 export BUILD_CONFIGURATION=Release
 ```
