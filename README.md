@@ -70,6 +70,12 @@ dotnet ef migrations add Initial --project University.API
 dotnet ef database update --project University.API -- --environment Production
 ```
 
+Перезапустить приложение после успешного применения миграции:
+```bash
+docker compose down
+docker compose up -d
+```
+
 #### Frontend
 
 Подготовить сборку фронтенд-части:
