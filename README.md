@@ -39,7 +39,7 @@ git clone https://github.com/waffencode/university-frontend.git
 
 Установить переменную `BUILD_CONFIGURATION` и `ASPNETCORE_ENVIRONMENT`, обозначив тот тип билда, который вы хотите получить (релизный или отладочный):
 
-```json
+```bash
 export BUILD_CONFIGURATION=Release
 ```
 
@@ -57,7 +57,7 @@ docker compose up -d --build
 ```
 
 Создать миграцию EF Core, которая создаст нужную структуру базы данных, и применить её к базе:
-```json
+```bash
 dotnet ef migrations add Initial --project University.API
 dotnet ef database update --project University.API -- --environment Production
 ```
