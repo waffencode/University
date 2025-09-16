@@ -8,7 +8,8 @@
     restart: always
     volumes:
       - pg_data:/var/lib/postgresql/data
-    network_mode: "service:university.api"
+    networks:
+      - internal-network
     
   university.api:
     container_name: University.API
@@ -21,16 +22,18 @@
       - ASPNETCORE_URLS=http://+:80;
     ports:
       - "7065:80"
-      - "5432:5432"
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - api-network
-    restart: always
+      - internal-network
+    restart: unless-stopped
     
 volumes:
   pg_data:
 
 networks:
+  internal-network:
+    internal: true
   api-network:
     driver: bridge
